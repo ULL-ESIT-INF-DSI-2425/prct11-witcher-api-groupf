@@ -1,0 +1,28 @@
+name: Coveralls # Nombre del flujo de trabajo
+
+on:
+  push: # Cada vez que se haga un push a la rama main se ejecutará el flujo de trabajo
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Cloning repo  # Clonar el repositorio
+      uses: actions/checkout@v4
+    - name: Use Node.js 23.x 
+      uses: actions/setup-node@v4
+      with:
+        node-version: 23.x
+    - name: Installing dependencies # Instalar las dependencias
+      run: npm ci
+    - name: Generating coverage information # Generar información de cobrimiento
+      run: npm run coverage
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v2.3.6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}

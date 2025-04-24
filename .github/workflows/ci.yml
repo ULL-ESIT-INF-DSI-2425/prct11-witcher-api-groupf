@@ -1,0 +1,28 @@
+name: CI Tests # Permite darle un nombre al flujo de trabajo
+
+on: #Permite especificar cuando se va a ejecutar el flujo de trabajo
+  push: #Se va a ejecutar cada vez que hagamos un push o un pull request sobre la rama main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs: # Permite definir los trabajos que se van a ejecutar
+  build:
+    # Primero se define el entorno en el que se va a ejecutar el trabajo
+    runs-on: ubuntu-latest
+
+    strategy: # Permite definir una estrategia de ejecución
+      matrix:
+        node-version: [18.x, 20.x, 22.x, 23.x]
+
+    steps:
+    - name: Cloning repo # Descarga el repositorio
+      uses: actions/checkout@v4 # Uso de una accion de github actions
+    - name: Use Node.js ${{ matrix.node-version }} # Configuración de la versión de node concreta
+      uses: actions/setup-node@v4 
+      with: 
+        node-version: ${{ matrix.node-version }}
+    - name: Installing dependencies # Instalación de las dependencias
+      run: npm ci 
+    - name: Running tests # Ejecución de los tests
+      run: npm test 
