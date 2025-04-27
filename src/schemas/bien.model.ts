@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 
 const bienSchema = new mongoose.Schema({
+  idUnico: { 
+    type: String, 
+    required: true, 
+    unique: true 
+  },
   nombre: {
     type: String,
     required: true,

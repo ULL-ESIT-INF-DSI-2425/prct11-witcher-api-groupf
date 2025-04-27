@@ -1,3 +1,4 @@
+/*
 import express from 'express';
 import { BienModel } from '../mongose/bien.model.js';
 
@@ -145,3 +146,5 @@ bienRouter.delete('/bienes/:id', (req, res) => {
       res.status(400).send();
     });
 });
+
+*/

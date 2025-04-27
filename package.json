@@ -38,6 +38,7 @@
     "@types/mongoose": "^5.11.96",
     "chalk": "^5.4.1",
     "express": "^5.1.0",
+    "mongodb": "^6.16.0",
     "mongoose": "^8.14.0",
     "request": "^2.88.2",
     "systeminformation": "^5.25.11",
