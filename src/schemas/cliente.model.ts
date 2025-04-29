@@ -1,5 +1,6 @@
 import { Document, Schema, model } from 'mongoose';
 
+
 // Interfaz para el tipado
 export interface ClienteDocumentInterface extends Document {
   nombre: string;
