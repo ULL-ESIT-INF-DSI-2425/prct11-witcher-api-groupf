@@ -29,3 +29,13 @@ export async function obtenerClientePorId(id: string) {
 export async function obtenerClientePorNombre(nombre: string) {
   return await Cliente.find({ nombre });
 }
+
+
+
+/**
+ * Elimina un cliente por su ID.
+ */
+export async function eliminarCliente(id: string) {
+  return await Cliente.findByIdAndDelete(id);
+}
+

@@ -1,24 +1,50 @@
-import mongoose from 'mongoose';
+import { Document, Schema, model } from 'mongoose';
 
-const MercaderSchema = new mongoose.Schema({
-  idUnico: { 
-    type: String, 
-    required: true, 
-    unique: true 
+export interface MerchantDocumentInterface extends Document {
+  nombre: string;
+  tienda: string;
+  ubicacion: string;
+  especialidad: string;
+  reputacion: number;
+  inventario?: string[];
+}
+
+const MerchantSchema = new Schema<MerchantDocumentInterface>({
+  nombre: {
+    type: String,
+    required: true,
+    trim: true,
+    validate: (value: string) => {
+      if (!value.match(/^[A-Z]/)) {
+        throw new Error('El nombre debe empezar con mayúscula.');
+      }
+    },
   },
-  nombre: { 
-    type: String, 
-    required: true 
+  tienda: {
+    type: String,
+    required: true,
+    trim: true
   },
-  tipo: { 
-    type: String, 
-    enum: ['humano', 'elfo', 'enano', 'otro'],
-    required: true 
+  ubicacion: {
+    type: String,
+    required: true,
+    enum: ['Novigrado', 'Oxenfurt', 'Velen', 'Skellige', 'Toussaint']
   },
-  ubicacion: { 
-    type: String, 
-    required: true 
+  especialidad: {
+    type: String,
+    required: true,
+    enum: ['Armas', 'Armaduras', 'Pociones', 'Ingredientes', 'Libros', 'Miscelánea']
   },
+  reputacion: {
+    type: Number,
+    required: true,
+    min: [1, 'La reputación mínima es 1'],
+    max: [5, 'La reputación máxima es 5']
+  },
+  inventario: {
+    type: [String],
+    default: []
+  }
 });
 
-export const MercaderModel = mongoose.model('Mercader', MercaderSchema);
+export const Merchant = model<MerchantDocumentInterface>('Merchant', MerchantSchema);

@@ -1,5 +1,5 @@
 import express from 'express';
-import { crearCliente, obtenerClientePorNombre, obtenerClientes , obtenerClientePorId} from '../functions/cliente.functions.js';
+import { crearCliente, obtenerClientePorNombre, obtenerClientes , obtenerClientePorId, eliminarCliente} from '../functions/cliente.functions.js';
 
 export const clienteRouter = express.Router();
 
@@ -47,5 +47,22 @@ clienteRouter.get('/clientes/:id', async (req, res) => {
     }
   } catch (error) {
     res.status(500).send({ mensaje: 'Error al buscar el cliente por ID', error });
+  }
+});
+
+
+// DELETE - Eliminar un cliente por ID
+clienteRouter.delete('/clientes/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const cliente = await eliminarCliente(id);
+
+    if (cliente) {
+      res.status(200).send({ mensaje: 'Cliente eliminado correctamente.' });
+    } else {
+      res.status(404).send({ mensaje: 'Cliente no encontrado.' });
+    }
+  } catch (error) {
+    res.status(500).send({ mensaje: 'Error al eliminar el cliente', error });
   }
 });

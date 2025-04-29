@@ -2,10 +2,13 @@ import express from 'express';
 import './db/mongoose.js';
 import { clienteRouter } from './routers/cliente.js';
 import { defaultRouter } from './routers/defaults.js';
+import { mercaderRouter } from './routers/mercaderes.js';
+
 
 const app = express();
 app.use(express.json());
 app.use(clienteRouter);
+app.use(mercaderRouter);
 app.use(defaultRouter);
 
 const port = process.env.PORT || 3000;
