@@ -31,14 +31,6 @@ export async function obtenerMercaderPorNombre(nombre: string) {
 }
 
 /**
- * Actualiza un mercader por su ID.
- */
-export async function actualizarMercader(id: string, updates: Partial<typeof Merchant>) {
-  // { new: true } devuelve el documento actualizado
-  return await Merchant.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
-}
-
-/**
  * Elimina un mercader por su ID.
  */
 export async function eliminarMercader(id: string) {
