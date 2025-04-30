@@ -1,5 +1,5 @@
 import express from 'express';
-import { crearCliente, obtenerClientePorNombre, obtenerClientes , obtenerClientePorId, eliminarCliente} from '../functions/cliente.functions.js';
+import { crearCliente, obtenerClientePorNombre, obtenerClientes , obtenerClientePorId, eliminarCliente, actualizarCliente} from '../functions/cliente.functions.js';
 
 export const clienteRouter = express.Router();
 
@@ -50,6 +50,28 @@ clienteRouter.get('/clientes/:id', async (req, res) => {
   }
 });
 
+// PATCH - Actualizar un cliente por ID
+clienteRouter.patch('/clientes/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    
+    if(updates._id) {
+      res.status(400).send({ mensaje: 'No se puede modificar el ID del cliente.' });
+      return;
+    }
+
+    const clienteActualizado = await actualizarCliente(id, updates);
+
+    if(clienteActualizado) {
+      res.status(200).send(clienteActualizado);
+    } else {
+      res.status(404).send({ mensaje: 'Cliente no encontrado.' });
+    }
+  } catch (error) {
+    res.status(500).send({ mensaje: 'Error al actualizar el cliente', error });
+  }
+});
 
 // DELETE - Eliminar un cliente por ID
 clienteRouter.delete('/clientes/:id', async (req, res) => {

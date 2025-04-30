@@ -1,32 +1,42 @@
 import express from 'express';
-import { crearBien, obtenerBienes, obtenerBienPorId, actualizarBien, eliminarBien } from '../functions/bien.functions.js';
+import { crearBien, obtenerBienes, obtenerBienPorId, actualizarBien, eliminarBien, obtenerBienPorNombre} from '../functions/bien.functions.js';
 
 export const bienesRouter = express.Router();
 
 // POST - Crear un nuevo bien
-bienesRouter.post('/goods', async (req, res) => {
+bienesRouter.post('/bienes', async (req, res) => {
   try {
     const bien = await crearBien(req.body);
     res.status(201).send(bien);
   } catch (error) {
-    res.status(400).send({ mensaje: 'Error al crear el bien', error });
+    res.status(400).send(error);
   }
 });
 
 // GET - Obtener bienes (todos o por filtros)
-bienesRouter.get('/goods', async (req, res) => {
+bienesRouter.get('/bienes', async (req, res) => {
   try {
-    const bienes = await obtenerBienes(req.query);
-    res.status(200).send(bienes);
+    const nombre = req.query.nombre?.toString();
+
+    const bienes = nombre
+      ? await obtenerBienPorNombre(nombre)
+      : await obtenerBienes();
+
+    if (bienes.length > 0) {
+      res.status(200).send(bienes);
+    }else {
+      res.status(404).send({ mensaje: 'No se encontraron bienes.' });
+    }
   } catch (error) {
-    res.status(500).send({ mensaje: 'Error al obtener los bienes', error });
+    res.status(500).send({ mensaje: 'Error interno del servidor', error });
   }
 });
 
 // GET - Obtener un bien por ID
-bienesRouter.get('/goods/:id', async (req, res) => {
+bienesRouter.get('/bienes/:id', async (req, res) => {
   try {
-    const bien = await obtenerBienPorId(req.params.id);
+    const { id } = req.params;
+    const bien = await obtenerBienPorId(id);
     if (bien) {
       res.status(200).send(bien);
     } else {
@@ -38,23 +48,32 @@ bienesRouter.get('/goods/:id', async (req, res) => {
 });
 
 // PATCH - Actualizar un bien por ID
-bienesRouter.patch('/goods/:id', async (req, res) => {
+bienesRouter.patch('/bienes/:id', async (req, res) => {
   try {
-    const bienActualizado = await actualizarBien(req.params.id, req.body);
+    const { id } = req.params;
+    const updates = req.body;
+
+    if (updates._id) {
+      res.status(400).send({ mensaje: 'No se puede modificar el ID del bien.' });
+      return;
+    }
+
+    const bienActualizado = await actualizarBien(id, updates);
     if (bienActualizado) {
       res.status(200).send(bienActualizado);
     } else {
       res.status(404).send({ mensaje: 'Bien no encontrado' });
     }
   } catch (error) {
-    res.status(400).send({ mensaje: 'Error al actualizar el bien', error });
+    res.status(500).send({ mensaje: 'Error al actualizar el bien', error });
   }
 });
 
 // DELETE - Eliminar un bien por ID
-bienesRouter.delete('/goods/:id', async (req, res) => {
+bienesRouter.delete('/bienes/:id', async (req, res) => {
   try {
-    const bienEliminado = await eliminarBien(req.params.id);
+    const { id } = req.params;
+    const bienEliminado = await eliminarBien(id);
     if (bienEliminado) {
       res.status(200).send({ mensaje: 'Bien eliminado correctamente' });
     } else {

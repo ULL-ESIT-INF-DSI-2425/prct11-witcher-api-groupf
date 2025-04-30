@@ -1,5 +1,5 @@
 import { Merchant } from '../schemas/mercadel.model.js';
-
+import { MerchantDocumentInterface } from '../schemas/mercadel.model.js';
 
 /**
  * Crea un nuevo mercader en la base de datos.
@@ -28,6 +28,13 @@ export async function obtenerMercaderPorId(id: string) {
  */
 export async function obtenerMercaderPorNombre(nombre: string) {
   return await Merchant.find({ nombre });
+}
+
+/**
+ * Actualiza un mercader por su ID.
+ */
+export async function actualizarMercader(id: string, updates: MerchantDocumentInterface) {
+  return await Merchant.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
 }
 
 /**

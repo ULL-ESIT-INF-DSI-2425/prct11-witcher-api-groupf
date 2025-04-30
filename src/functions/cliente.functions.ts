@@ -1,4 +1,4 @@
-import { Cliente } from '../schemas/cliente.model.js';
+import { Cliente, ClienteDocumentInterface } from '../schemas/cliente.model.js';
 
 
 /**
@@ -30,7 +30,12 @@ export async function obtenerClientePorNombre(nombre: string) {
   return await Cliente.find({ nombre });
 }
 
-
+/**
+ * Actualiza un cliente por su ID.
+ */
+export async function actualizarCliente(id: string, updates: ClienteDocumentInterface) {
+  return await Cliente.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+}
 
 /**
  * Elimina un cliente por su ID.

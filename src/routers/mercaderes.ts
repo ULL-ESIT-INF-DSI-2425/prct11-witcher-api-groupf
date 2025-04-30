@@ -1,5 +1,5 @@
 import express from 'express';
-import { crearMercader, obtenerMercaderPorNombre, obtenerMercaderes , obtenerMercaderPorId, eliminarMercader} from '../functions/mercader.functions.js';
+import { crearMercader, obtenerMercaderPorNombre, obtenerMercaderes , obtenerMercaderPorId, eliminarMercader, actualizarMercader} from '../functions/mercader.functions.js';
 
 export const mercaderRouter = express.Router();
 
@@ -50,28 +50,29 @@ mercaderRouter.get('/mercaderes/:id', async (req, res) => {
   }
 });
 
+
 // PATCH - Actualizar un mercader por ID
-// mercaderRouter.patch('/mercaderes/:id', async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const updates = req.body;
+mercaderRouter.patch('/mercaderes/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
     
-//     // Validar que no se intente actualizar el ID
-//     if (updates._id) {
-//       return res.status(400).send({ mensaje: 'No se puede modificar el ID del mercader.' });
-//     }
+    if (updates._id) {
+      res.status(400).send({ mensaje: 'No se puede modificar el ID del mercader.' });
+      return;
+    }
 
-//     const mercaderActualizado = await actualizarMercader(id, updates);
+    const mercaderActualizado = await actualizarMercader(id, updates);
 
-//     if (mercaderActualizado) {
-//       res.status(200).send(mercaderActualizado);
-//     } else {
-//       res.status(404).send({ mensaje: 'Mercader no encontrado.' });
-//     }
-//   } catch (error) {
-//     res.status(400).send({ mensaje: 'Error al actualizar el mercader', error });
-//   }
-// });
+    if (mercaderActualizado) {
+      res.status(200).send(mercaderActualizado);
+    } else {
+      res.status(404).send({ mensaje: 'Mercader no encontrado.' });
+    }
+  } catch (error) {
+    res.status(400).send({ mensaje: 'Error al actualizar el mercader', error });
+  }
+});
 
 
 // DELETE - Eliminar un mercader por ID
