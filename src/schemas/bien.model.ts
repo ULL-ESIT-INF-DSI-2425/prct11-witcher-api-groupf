@@ -1,19 +1,29 @@
-import mongoose from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
-const bienSchema = new mongoose.Schema({
-  idUnico: { 
-    type: String, 
-    required: true, 
-    unique: true 
+export interface BienDocumentInterface extends Document {
+  idUnico: string;
+  nombre: string;
+  descripcion: string;
+  valor: number;
+  tipo: 'arma' | 'armadura' | 'pocion' | 'herramienta' | 'otro';
+}
+
+const BienSchema = new Schema<BienDocumentInterface>({
+  idUnico: {
+    type: String,
+    required: true,
+    unique: true,
   },
   nombre: {
     type: String,
     required: true,
     unique: true,
+    trim: true,
   },
   descripcion: {
     type: String,
     required: true,
+    trim: true,
   },
   valor: {
     type: Number,
@@ -27,18 +37,4 @@ const bienSchema = new mongoose.Schema({
   },
 });
 
-export const BienModel = mongoose.model('Bien', bienSchema);
-
-
-// import mongoose from 'mongoose';
-
-// const BienSchema = new mongoose.Schema({
-//   idUnico: { type: String, required: true, unique: true },
-//   nombre: { type: String, required: true },
-//   descripcion: { type: String, required: true },
-//   material: { type: String, required: true },
-//   peso: { type: Number, required: true, min: 0 },
-//   valorCoronas: { type: Number, required: true, min: 0 },
-// });
-
-// export const BienModel = mongoose.model('Bien', BienSchema);
+export const Bien = model<BienDocumentInterface>('Bien', BienSchema);
