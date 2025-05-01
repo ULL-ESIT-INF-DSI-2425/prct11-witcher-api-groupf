@@ -16,15 +16,17 @@ bienesRouter.post('/bienes', async (req, res) => {
 // GET - Obtener bienes (todos o por filtros)
 bienesRouter.get('/bienes', async (req, res) => {
   try {
-    const nombre = req.query.nombre?.toString();
+    const { nombre, descripcion } = req.query;
 
-    const bienes = nombre
-      ? await obtenerBienPorNombre(nombre)
-      : await obtenerBienes();
+    const filtros: any = {};
+    if (nombre) filtros.nombre = nombre.toString();
+    if (descripcion) filtros.descripcion = descripcion.toString();
+
+    const bienes = await obtenerBienes(filtros);
 
     if (bienes.length > 0) {
       res.status(200).send(bienes);
-    }else {
+    } else {
       res.status(404).send({ mensaje: 'No se encontraron bienes.' });
     }
   } catch (error) {
