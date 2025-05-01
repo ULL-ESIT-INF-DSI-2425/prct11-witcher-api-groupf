@@ -1,4 +1,5 @@
 import { Cliente, ClienteDocumentInterface } from '../schemas/cliente.model.js';
+import { Bien } from '../schemas/bien.model.js';  
 
 
 /**
@@ -44,3 +45,34 @@ export async function eliminarCliente(id: string) {
   return await Cliente.findByIdAndDelete(id);
 }
 
+
+/**
+ * Añade un bien a un cliente (recibe 2 IDs: clienteId y bienId).
+ */
+export async function addBienToCliente(clienteId: string, bienId: string) {
+  // Verifica que existan ambos
+  const cliente = await Cliente.findById(clienteId);
+  if (!cliente) throw new Error('Cliente no encontrado');
+  
+  const bien = await Bien.findById(bienId);
+  if (!bien) throw new Error('Bien no encontrado');
+
+  // Evita duplicados
+  if (!cliente.bienes.includes(bienId)) {
+    cliente.bienes.push(bienId);
+    await cliente.save();
+  }
+  return cliente;
+}
+
+/**
+ * Elimina un bien de un cliente (recibe 2 IDs: clienteId y bienId).
+ */
+export async function removeBienFromCliente(clienteId: string, bienId: string) {
+  const cliente = await Cliente.findById(clienteId);
+  if (!cliente) throw new Error('Cliente no encontrado');
+
+  cliente.bienes = cliente.bienes.filter(b => b.toString() !== bienId);
+  await cliente.save();
+  return cliente;
+}

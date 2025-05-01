@@ -1,5 +1,7 @@
 import { Merchant } from '../schemas/mercadel.model.js';
 import { MerchantDocumentInterface } from '../schemas/mercadel.model.js';
+import { Bien } from '../schemas/bien.model.js';
+
 
 /**
  * Crea un nuevo mercader en la base de datos.
@@ -42,4 +44,38 @@ export async function actualizarMercader(id: string, updates: MerchantDocumentIn
  */
 export async function eliminarMercader(id: string) {
   return await Merchant.findByIdAndDelete(id);
+}
+
+/**
+ * Añade un bien al inventario de un mercader (recibe 2 IDs: mercaderId y bienId).
+ */
+export async function addBienToMerchant(mercaderId: string, bienId: string) {
+  const mercader = await Merchant.findById(mercaderId);
+  if (!mercader) throw new Error('Mercader no encontrado');
+  
+  const bien = await Bien.findById(bienId);
+  if (!bien) throw new Error('Bien no encontrado');
+
+  // Inicializa inventario si es undefined (según esquema)
+  if (!mercader.inventario) mercader.inventario = []; 
+
+  // Evita duplicados
+  if (!mercader.inventario.includes(bienId)) {
+    mercader.inventario.push(bienId);
+    await mercader.save();
+  }
+  return mercader;
+}
+
+/**
+ * Elimina un bien del inventario de un mercader (recibe 2 IDs: mercaderId y bienId).
+ */
+export async function removeBienFromMerchant(mercaderId: string, bienId: string) {
+  const mercader = await Merchant.findById(mercaderId);
+  if (!mercader) throw new Error('Mercader no encontrado');
+
+  // Filtra el bien a eliminar
+  mercader.inventario = mercader.inventario?.filter(b => b.toString() !== bienId) || [];
+  await mercader.save();
+  return mercader;
 }
