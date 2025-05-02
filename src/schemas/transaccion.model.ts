@@ -2,9 +2,9 @@ import { Schema, model, Document } from 'mongoose';
 
 export interface TransaccionDocumentInterface extends Document {
   fecha: Date;
-  cazadorId: string;
+  clienteId: string;
   mercaderId: string;
-  bienes: { bienId: string; cantidad: number }[];
+  bienes: string[];
 }
 
 const TransaccionSchema = new Schema<TransaccionDocumentInterface>({
@@ -12,7 +12,7 @@ const TransaccionSchema = new Schema<TransaccionDocumentInterface>({
     type: Date,
     default: Date.now,
   },
-  cazadorId: {
+  clienteId: {
     type: String,
     required: true,
   },
@@ -20,19 +20,10 @@ const TransaccionSchema = new Schema<TransaccionDocumentInterface>({
     type: String,
     required: true,
   },
-  bienes: [
-    {
-      bienId: {
-        type: String,
-        required: true,
-      },
-      cantidad: {
-        type: Number,
-        required: true,
-        min: 1,
-      },
-    },
-  ]
+  bienes: {
+    type: [String],
+    required: true,
+  },
 });
 
 export const Transaccion = model<TransaccionDocumentInterface>('Transaccion', TransaccionSchema);

@@ -1,13 +1,13 @@
-import { Merchant } from '../schemas/mercadel.model.js';
-import { MerchantDocumentInterface } from '../schemas/mercadel.model.js';
+import { Mercader } from '../schemas/mercader.model.js';
+import { MercaderDocumentInterface } from '../schemas/mercader.model.js';
 import { Bien } from '../schemas/bien.model.js';
 
 
 /**
  * Crea un nuevo mercader en la base de datos.
  */
-export async function crearMercader(data: typeof Merchant) {
-  const mercader = new Merchant(data);
+export async function crearMercader(data: typeof Mercader) {
+  const mercader = new Mercader(data);
   return await mercader.save();
 }
 
@@ -15,42 +15,42 @@ export async function crearMercader(data: typeof Merchant) {
  * Obtiene todos los mercaderes.
  */
 export async function obtenerMercaderes() {
-  return await Merchant.find();
+  return await Mercader.find();
 }
 
 /**
  * Obtiene un mercader por su ID.
  */
 export async function obtenerMercaderPorId(id: string) {
-  return await Merchant.findById(id);
+  return await Mercader.findById(id);
 }
 
 /**
  * Obtiene un mercader por su nombre.
  */
 export async function obtenerMercaderPorNombre(nombre: string) {
-  return await Merchant.find({ nombre });
+  return await Mercader.find({ nombre });
 }
 
 /**
  * Actualiza un mercader por su ID.
  */
-export async function actualizarMercader(id: string, updates: MerchantDocumentInterface) {
-  return await Merchant.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+export async function actualizarMercader(id: string, updates: MercaderDocumentInterface) {
+  return await Mercader.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
 }
 
 /**
  * Elimina un mercader por su ID.
  */
 export async function eliminarMercader(id: string) {
-  return await Merchant.findByIdAndDelete(id);
+  return await Mercader.findByIdAndDelete(id);
 }
 
 /**
  * Añade un bien al inventario de un mercader (recibe 2 IDs: mercaderId y bienId).
  */
 export async function addBienToMercader(mercaderId: string, bienId: string) {
-  const mercader = await Merchant.findById(mercaderId);
+  const mercader = await Mercader.findById(mercaderId);
   if (!mercader) throw new Error('Mercader no encontrado');
   
   const bien = await Bien.findById(bienId);
@@ -70,8 +70,8 @@ export async function addBienToMercader(mercaderId: string, bienId: string) {
 /**
  * Elimina un bien del inventario de un mercader (recibe 2 IDs: mercaderId y bienId).
  */
-export async function removeBienFromMerchant(mercaderId: string, bienId: string) {
-  const mercader = await Merchant.findById(mercaderId);
+export async function removeBienFromMercader(mercaderId: string, bienId: string) {
+  const mercader = await Mercader.findById(mercaderId);
   if (!mercader) throw new Error('Mercader no encontrado');
 
   // Filtra el bien a eliminar
@@ -82,7 +82,7 @@ export async function removeBienFromMerchant(mercaderId: string, bienId: string)
 
 // funcion que recibe un id de mercader y un vetor de ids de bienes y devuelve bool si el mercader tiene todos los bienes
 export async function mercaderTieneBienes(mercaderId: string, bienesIds: string[]) {
-  const mercader = await Merchant.findById(mercaderId);
+  const mercader = await Mercader.findById(mercaderId);
   if (!mercader) throw new Error('Mercader no encontrado');
   // Verifica si el mercader tiene todos los bienes
   const tieneTodos = bienesIds.every(bienId => mercader.inventario.includes(bienId));
@@ -91,7 +91,7 @@ export async function mercaderTieneBienes(mercaderId: string, bienesIds: string[
 
 // funcioan para darle dinero a un mercader
 export async function addDineroToMercader(mercaderId: string, dinero: number) {
-  const mercader = await Merchant.findById(mercaderId);
+  const mercader = await Mercader.findById(mercaderId);
   if (!mercader) throw new Error('Mercader no encontrado');
   mercader.dinero += dinero;
   await mercader.save();

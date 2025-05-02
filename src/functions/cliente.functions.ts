@@ -57,9 +57,6 @@ export async function addBienToCliente(clienteId: string, bienId: string) {
   const bien = await Bien.findById(bienId);
   if (!bien) throw new Error('Bien no encontrado');
 
-  // Inicializa inventario si es undefined (según esquema)
-  if (!cliente.bienes) cliente.bienes = []; 
-
   // Evita duplicados
   if (!cliente.bienes.includes(bienId)) {
     cliente.bienes.push(bienId);

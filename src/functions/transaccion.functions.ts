@@ -5,8 +5,8 @@ import { Transaccion } from '../schemas/transaccion.model.js';
  * Crea un nuevo mercader en la base de datos.
  */
 export async function crearTransaccionCompleta(data: typeof Transaccion) {
-  const mercader = new Transaccion(data);
-  return await mercader.save();
+  const transaccion = new Transaccion(data);
+  return await transaccion.save();
 }
 
 /**
@@ -21,11 +21,4 @@ export async function obtenerTransaccion() {
  */
 export async function obtenerTransaccionPorId(id: string) {
   return await Transaccion.findById(id);
-}
-
-/**
- * Obtiene un mercader por su nombre.
- */
-export async function obtenerTransaccionPorNombre(nombre: string) {
-  return await Transaccion.find({ nombre });
 }

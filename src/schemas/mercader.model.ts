@@ -1,6 +1,6 @@
 import { Document, Schema, model } from 'mongoose';
 
-export interface MerchantDocumentInterface extends Document {
+export interface MercaderDocumentInterface extends Document {
   nombre: string;
   tienda: string;
   ubicacion: string;
@@ -10,7 +10,7 @@ export interface MerchantDocumentInterface extends Document {
   inventario: string[];
 }
 
-const MerchantSchema = new Schema<MerchantDocumentInterface>({
+const MercaderSchema = new Schema<MercaderDocumentInterface>({
   nombre: {
     type: String,
     required: true,
@@ -53,4 +53,4 @@ const MerchantSchema = new Schema<MerchantDocumentInterface>({
   }
 });
 
-export const Merchant = model<MerchantDocumentInterface>('Merchant', MerchantSchema);
+export const Mercader = model<MercaderDocumentInterface>('Mercader', MercaderSchema);

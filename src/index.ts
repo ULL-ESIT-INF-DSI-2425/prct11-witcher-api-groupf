@@ -11,8 +11,8 @@ app.use(express.json());
 app.use(clienteRouter);
 app.use(mercaderRouter);
 app.use(bienesRouter);
-app.use(defaultRouter);
 app.use(transaccionRouter);
+app.use(defaultRouter);
 
 const port = process.env.PORT || 3000;
 
