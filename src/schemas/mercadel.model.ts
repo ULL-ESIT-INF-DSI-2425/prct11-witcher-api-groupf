@@ -6,7 +6,8 @@ export interface MerchantDocumentInterface extends Document {
   ubicacion: string;
   especialidad: string;
   reputacion: number;
-  inventario?: string[];
+  dinero: number;
+  inventario: string[];
 }
 
 const MerchantSchema = new Schema<MerchantDocumentInterface>({
@@ -40,6 +41,11 @@ const MerchantSchema = new Schema<MerchantDocumentInterface>({
     required: true,
     min: [1, 'La reputación mínima es 1'],
     max: [5, 'La reputación máxima es 5']
+  },
+  dinero: {
+    type: Number,
+    required: true,
+    min: [0, 'El dinero no puede ser negativo']
   },
   inventario: {
     type: [String],

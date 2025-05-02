@@ -57,6 +57,9 @@ export async function addBienToCliente(clienteId: string, bienId: string) {
   const bien = await Bien.findById(bienId);
   if (!bien) throw new Error('Bien no encontrado');
 
+  // Inicializa inventario si es undefined (según esquema)
+  if (!cliente.bienes) cliente.bienes = []; 
+
   // Evita duplicados
   if (!cliente.bienes.includes(bienId)) {
     cliente.bienes.push(bienId);
@@ -73,6 +76,15 @@ export async function removeBienFromCliente(clienteId: string, bienId: string) {
   if (!cliente) throw new Error('Cliente no encontrado');
 
   cliente.bienes = cliente.bienes.filter(b => b.toString() !== bienId);
+  await cliente.save();
+  return cliente;
+}
+
+// funcion para quietarle dinero al cliente por su id
+export async function quitarDineroCliente(clienteId: string, dinero: number) {
+  const cliente = await Cliente.findById(clienteId);
+  if (!cliente) throw new Error('Cliente no encontrado');
+  cliente.dinero -= dinero;
   await cliente.save();
   return cliente;
 }

@@ -49,7 +49,7 @@ export async function eliminarMercader(id: string) {
 /**
  * Añade un bien al inventario de un mercader (recibe 2 IDs: mercaderId y bienId).
  */
-export async function addBienToMerchant(mercaderId: string, bienId: string) {
+export async function addBienToMercader(mercaderId: string, bienId: string) {
   const mercader = await Merchant.findById(mercaderId);
   if (!mercader) throw new Error('Mercader no encontrado');
   
@@ -76,6 +76,24 @@ export async function removeBienFromMerchant(mercaderId: string, bienId: string)
 
   // Filtra el bien a eliminar
   mercader.inventario = mercader.inventario?.filter(b => b.toString() !== bienId) || [];
+  await mercader.save();
+  return mercader;
+}
+
+// funcion que recibe un id de mercader y un vetor de ids de bienes y devuelve bool si el mercader tiene todos los bienes
+export async function mercaderTieneBienes(mercaderId: string, bienesIds: string[]) {
+  const mercader = await Merchant.findById(mercaderId);
+  if (!mercader) throw new Error('Mercader no encontrado');
+  // Verifica si el mercader tiene todos los bienes
+  const tieneTodos = bienesIds.every(bienId => mercader.inventario.includes(bienId));
+  return tieneTodos;
+}
+
+// funcioan para darle dinero a un mercader
+export async function addDineroToMercader(mercaderId: string, dinero: number) {
+  const mercader = await Merchant.findById(mercaderId);
+  if (!mercader) throw new Error('Mercader no encontrado');
+  mercader.dinero += dinero;
   await mercader.save();
   return mercader;
 }

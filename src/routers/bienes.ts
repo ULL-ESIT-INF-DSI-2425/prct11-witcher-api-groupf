@@ -16,18 +16,16 @@ bienesRouter.post('/bienes', async (req, res) => {
 // GET - Obtener bienes (todos o por filtros)
 bienesRouter.get('/bienes', async (req, res) => {
   try {
-    const { nombre, descripcion } = req.query;
+    const nombre = req.query.nombre?.toString();
 
-    const filtros: any = {};
-    if (nombre) filtros.nombre = nombre.toString();
-    if (descripcion) filtros.descripcion = descripcion.toString();
-
-    const bienes = await obtenerBienes(filtros);
+    const bienes = nombre
+      ? await obtenerBienPorNombre(nombre)
+      : await obtenerBienes();
 
     if (bienes.length > 0) {
       res.status(200).send(bienes);
     } else {
-      res.status(404).send({ mensaje: 'No se encontraron bienes.' });
+      res.status(404).send({ mensaje: 'No se encontraron clientes.' });
     }
   } catch (error) {
     res.status(500).send({ mensaje: 'Error interno del servidor', error });

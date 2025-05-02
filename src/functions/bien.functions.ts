@@ -11,8 +11,8 @@ export async function crearBien(data: typeof Bien) {
 /**
  * Obtiene todos los bienes o busca por nombre/descripción.
  */
-export async function obtenerBienes(filtros: any = {}) {
-  return await Bien.find(filtros);
+export async function obtenerBienes() {
+  return await Bien.find();
 }
 
 /**

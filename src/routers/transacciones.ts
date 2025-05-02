@@ -1,50 +1,51 @@
 import express from 'express';
-import {
-  crearTransaccion,
-  obtenerTransacciones,
-  eliminarTransaccion,
-} from '../functions/transaccion.functions.js';
+import { crearTransaccionCompleta, obtenerTransaccion, obtenerTransaccionPorId, obtenerTransaccionPorNombre } from '../functions/transaccion.functions.js';
 
 export const transaccionRouter = express.Router();
 
-// POST - Crear una nueva transacción
 transaccionRouter.post('/transacciones', async (req, res) => {
   try {
-    const transaccion = await crearTransaccion(req.body);
+    const transaccion = await crearTransaccionCompleta(req.body);
     res.status(201).send(transaccion);
   } catch (error) {
-    res.status(400).send({ mensaje: 'Error al crear la transacción', error });
+    console.error('Error en transacción:', error);
+    res.status(400).send({ mensaje: (error as Error).message });
   }
 });
 
-// GET - Obtener transacciones por filtros
+
+// GET - Obtener mercaderes (todos o por nombre)
 transaccionRouter.get('/transacciones', async (req, res) => {
   try {
-    const { cazadorId, mercaderId, fechaInicio, fechaFin } = req.query;
-    const transacciones = await obtenerTransacciones({
-      cazadorId: cazadorId?.toString(),
-      mercaderId: mercaderId?.toString(),
-      fechaInicio: fechaInicio ? new Date(fechaInicio.toString()) : undefined,
-      fechaFin: fechaFin ? new Date(fechaFin.toString()) : undefined,
-    });
-    res.status(200).send(transacciones);
+    const nombre = req.query.nombre?.toString();
+
+    const mercaderes = nombre
+      ? await obtenerTransaccionPorNombre(nombre)
+      : await obtenerTransaccion();
+
+    if (mercaderes.length > 0) {
+      res.status(200).send(mercaderes);
+    } else {
+      res.status(404).send({ mensaje: 'No se encontraron trnasacciones.' });
+    }
   } catch (error) {
-    res.status(500).send({ mensaje: 'Error al obtener transacciones', error });
+    res.status(500).send({ mensaje: 'Error interno del servidor', error });
   }
 });
 
-// DELETE - Eliminar una transacción por ID
-transaccionRouter.delete('/transacciones/:id', async (req, res) => {
+
+// GET - Obtener un mercader por ID
+transaccionRouter.get('/transacciones/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const transaccion = await eliminarTransaccion(id);
+    const mercader = await obtenerTransaccionPorId(id);
 
-    if (transaccion) {
-      res.status(200).send({ mensaje: 'Transacción eliminada correctamente.' });
+    if (mercader) {
+      res.status(200).send(mercader);
     } else {
-      res.status(404).send({ mensaje: 'Transacción no encontrada.' });
+      res.status(404).send({ mensaje: 'Mercader no encontrado.' });
     }
   } catch (error) {
-    res.status(500).send({ mensaje: 'Error al eliminar la transacción', error });
+    res.status(500).send({ mensaje: 'Error al buscar el mercader por ID', error });
   }
 });
