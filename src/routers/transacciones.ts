@@ -3,6 +3,8 @@ import { crearTransaccionCompleta, obtenerTransaccion, obtenerTransaccionPorId} 
 import { obtenerMercaderPorId , actualizarMercader, removeBienFromMercader} from '../functions/mercader.functions.js';
 import { obtenerClientePorId, actualizarCliente, addBienToCliente } from '../functions/cliente.functions.js';
 import { obtenerBienPorId } from '../functions/bien.functions.js';
+import { TransaccionDocumentInterface } from '../schemas/transaccion.model.js';
+
 
 export const transaccionRouter = express.Router();
 
@@ -107,3 +109,48 @@ transaccionRouter.get('/transacciones/:id', async (req, res) => {
     res.status(500).send({ mensaje: 'Error al buscar el transacciones por ID', error });
   }
 });
+
+// OPTIONS - Buscar y ordenar transacciones según criterios
+transaccionRouter.options('/transacciones/ordenar', async (req, res) => {
+  try {
+    const { ordenar, ascendente } = req.body;
+
+    // Validar que los parámetros necesarios estén presentes
+    if (!ordenar || typeof ascendente === 'undefined') {
+      res.status(400).send({ mensaje: 'Se requieren los campos "ordenar" y "ascendente".' });
+      return;
+    }
+
+    const orden = ascendente ? 1 : -1; // 1 para ascendente, -1 para descendente
+    const transacciones = await obtenerTransaccion();
+
+    // Verificar si hay transacciones
+    if (transacciones.length === 0) {
+      res.status(404).send({ mensaje: 'No se encontraron transacciones.' });
+      return;
+    }
+
+    // Verificar que el campo "ordenar" sea válido
+    if (!(ordenar in transacciones[0])) {
+      res.status(400).send({ mensaje: `El campo "${ordenar}" no es válido para ordenar.` });
+      return;
+    }
+
+    // Ordenar las transacciones según el campo y el orden especificado
+    const transaccionesOrdenadas = transacciones.sort((a, b) => {
+      const valorA = a[ordenar as keyof TransaccionDocumentInterface];
+      const valorB = b[ordenar as keyof TransaccionDocumentInterface];
+
+      if (valorA < valorB) return -orden;
+      if (valorA > valorB) return orden;
+      return 0;
+    });
+
+    // Enviar las transacciones ordenadas
+    res.status(200).send(transaccionesOrdenadas);
+  } catch (error) {
+    res.status(500).send({ mensaje: 'Error al ordenar las transacciones.', error });
+  }
+});
+
+
