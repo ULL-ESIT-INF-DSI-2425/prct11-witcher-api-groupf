@@ -8,14 +8,35 @@
 * Curso: 2024 / 2025
 * Autores: Saray García Campos, Adrián León Díaz, Víctor Rodríguez Dorta
   
-➡️ En este repositorio desarollaremos el informe y los ejercicios de la Práctica 12, llamada "API REST con Node/Express para gestionar La Posada del Lobo Blanco" de la asignatura "Desarrollo de sistemas informáticos".
+➡️ En este repositorio desarollaremos el informe y los ejercicios de la Práctica 11, llamada "API REST con Node/Express para gestionar La Posada del Lobo Blanco" de la asignatura "Desarrollo de sistemas informáticos".
 
 ## Compilacion
 
+### Iniciación de MongoDB
+Instala Mongo en tu dispositivo
+➡️ Ejecuta en tu local  (no en el repo)
 ```Bash
-
+sudo /home/usuario/mongodb/bin/mongod --dbpath /home/usuario/mongodb-data/
 ```
-(ejecuta en modo tsc watch)
+➡️ Añade una nueva terminal y ejecuta en tu local (no en el repo)
+```Bash
+mongosh
+```
+
+### Ejecución del Servidor
+
+#### Compilación
+```Bash
+tsc
+```
+#### Ejecución
+```Bash
+npm run app
+```
+
+➡️ Después de ejecutar, podrás usarlo con las extensiones MongoDB y Postman en VisualStudio.
+
+
 
 
 ## 📱 _Contactos_
