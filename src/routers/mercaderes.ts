@@ -52,6 +52,26 @@ mercaderRouter.get('/mercaderes/:id', async (req, res) => {
 });
 
 
+// GET - Obtener el dinero de un mercader por ID
+mercaderRouter.get('/mercaderes/:id/dinero', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Obtener el mercader por ID
+    const mercader = await obtenerMercaderPorId(id);
+    if (!mercader) {
+      res.status(404).send({ mensaje: 'Mercader no encontrado.' });
+      return;
+    }
+
+    // Devolver el dinero del mercader
+    res.status(200).send({ mensaje: 'Dinero del mercader obtenido correctamente.', dinero: mercader.dinero });
+  } catch (error) {
+    res.status(500).send({ mensaje: 'Error al obtener el dinero del mercader.', error });
+  }
+});
+
+
 // PATCH - Actualizar un mercader por ID
 mercaderRouter.patch('/mercaderes/:id', async (req, res) => {
   try {
@@ -92,8 +112,7 @@ mercaderRouter.delete('/mercaderes/:id', async (req, res) => {
   }
 });
 
-
-// OPTIONS - Buscar y ordenar mercaderes según criterios
+// OPTIONS - Ordenar mercaderes
 mercaderRouter.options('/mercaderes/ordenar', async (req, res) => {
   try {
     const { ordenar, ascendente } = req.body;
@@ -121,8 +140,8 @@ mercaderRouter.options('/mercaderes/ordenar', async (req, res) => {
 
     // Ordenar los mercaderes según el campo y el orden especificado
     const mercaderesOrdenados = mercaderes.sort((a, b) => {
-      const valorA = a[ordenar as keyof MercaderDocumentInterface];
-      const valorB = b[ordenar as keyof MercaderDocumentInterface];
+      const valorA = a[ordenar as keyof MercaderDocumentInterface]?.toString().toLowerCase();
+      const valorB = b[ordenar as keyof MercaderDocumentInterface]?.toString().toLowerCase();
 
       if (valorA < valorB) return -orden;
       if (valorA > valorB) return orden;
@@ -135,4 +154,5 @@ mercaderRouter.options('/mercaderes/ordenar', async (req, res) => {
     res.status(500).send({ mensaje: 'Error al ordenar los mercaderes.', error });
   }
 });
+
 

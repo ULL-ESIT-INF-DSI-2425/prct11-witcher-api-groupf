@@ -35,6 +35,27 @@ clienteRouter.get('/clientes', async (req, res) => {
 });
 
 
+// GET - Obtener el dinero de un cliente por ID
+clienteRouter.get('/clientes/:id/dinero', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Obtener el cliente por ID
+    const cliente = await obtenerClientePorId(id);
+    if (!cliente) {
+      res.status(404).send({ mensaje: 'Cliente no encontrado.' });
+      return;
+    }
+
+    // Enviar el dinero del cliente
+    res.status(200).send({ dinero: cliente.dinero });
+  }
+  catch (error) {
+    res.status(500).send({ mensaje: 'Error al obtener el dinero del cliente', error });
+  }
+});
+
+
 // GET - Obtener un cliente por ID
 clienteRouter.get('/clientes/:id', async (req, res) => {
   try {
@@ -74,6 +95,8 @@ clienteRouter.patch('/clientes/:id', async (req, res) => {
   }
 });
 
+
+
 // DELETE - Eliminar un cliente por ID
 clienteRouter.delete('/clientes/:id', async (req, res) => {
   try {
@@ -90,7 +113,7 @@ clienteRouter.delete('/clientes/:id', async (req, res) => {
   }
 });
 
-// OPTIONS - Buscar y ordenar clientes según criterios
+// OPTIONS - Ordenar clientes
 clienteRouter.options('/clientes/ordenar', async (req, res) => {
   try {
     const { ordenar, ascendente } = req.body;
@@ -118,12 +141,9 @@ clienteRouter.options('/clientes/ordenar', async (req, res) => {
 
     // Ordenar los clientes según el campo y el orden especificado
     const clientesOrdenados = clientes.sort((a, b) => {
-      const valorA = a[ordenar as keyof ClienteDocumentInterface];
-      const valorB = b[ordenar as keyof ClienteDocumentInterface];
-
-      if (valorA < valorB) return -orden;
-      if (valorA > valorB) return orden;
-      return 0;
+      const valorA = a.nombre.toLowerCase();
+      const valorB = b.nombre.toLowerCase();
+      return ascendente ? valorA.localeCompare(valorB) : valorB.localeCompare(valorA);
     });
 
     // Enviar los clientes ordenados
@@ -132,3 +152,7 @@ clienteRouter.options('/clientes/ordenar', async (req, res) => {
     res.status(500).send({ mensaje: 'Error al ordenar los clientes.', error });
   }
 });
+
+
+
+

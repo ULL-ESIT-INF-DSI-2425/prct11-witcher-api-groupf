@@ -110,7 +110,41 @@ transaccionRouter.get('/transacciones/:id', async (req, res) => {
   }
 });
 
-// OPTIONS - Buscar y ordenar transacciones según criterios
+// GET - Obtener el total de una transacción por ID
+transaccionRouter.get('/transacciones/:id/total', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Obtener la transacción por ID
+    const transaccion = await obtenerTransaccionPorId(id) as TransaccionDocumentInterface;
+    if (!transaccion) {
+      res.status(404).send({ mensaje: 'Transacción no encontrada.' });
+      return;
+    }
+
+    // Obtener los objetos completos de los bienes
+    const bienesCompletos = await Promise.all(
+      transaccion.bienes.map(async (bienId) => {
+        const bien = await obtenerBienPorId(bienId);
+        if (!bien) {
+          throw new Error(`El bien con ID ${bienId} no existe.`);
+        }
+        return bien;
+      })
+    );
+
+    // Calcular el total de la transacción
+    const total = bienesCompletos.reduce((acumulador, bien) => {
+      return acumulador + bien.valor;
+    }, 0);
+
+    // Devolver el total de la transacción
+    res.status(200).send({ mensaje: 'Total de la transacción obtenido correctamente.', total });
+  } catch (error) {
+    res.status(500).send({ mensaje: 'Error al obtener el total de la transacción.', error });
+  }
+});
+
 transaccionRouter.options('/transacciones/ordenar', async (req, res) => {
   try {
     const { ordenar, ascendente } = req.body;
@@ -138,8 +172,8 @@ transaccionRouter.options('/transacciones/ordenar', async (req, res) => {
 
     // Ordenar las transacciones según el campo y el orden especificado
     const transaccionesOrdenadas = transacciones.sort((a, b) => {
-      const valorA = a[ordenar as keyof TransaccionDocumentInterface];
-      const valorB = b[ordenar as keyof TransaccionDocumentInterface];
+      const valorA = a[ordenar as keyof TransaccionDocumentInterface]?.toString().toLowerCase();
+      const valorB = b[ordenar as keyof TransaccionDocumentInterface]?.toString().toLowerCase();
 
       if (valorA < valorB) return -orden;
       if (valorA > valorB) return orden;
@@ -152,5 +186,7 @@ transaccionRouter.options('/transacciones/ordenar', async (req, res) => {
     res.status(500).send({ mensaje: 'Error al ordenar las transacciones.', error });
   }
 });
+
+
 
 

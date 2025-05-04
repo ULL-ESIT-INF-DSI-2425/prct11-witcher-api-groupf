@@ -4,6 +4,10 @@ import { BienDocumentInterface } from '../schemas/bien.model.js';
 
 export const bienesRouter = express.Router();
 
+
+
+
+
 // POST - Crear un nuevo bien
 bienesRouter.post('/bienes', async (req, res) => {
   try {
@@ -33,6 +37,27 @@ bienesRouter.get('/bienes', async (req, res) => {
   }
 });
 
+
+// GET - Obtener el valor de un bien por ID
+bienesRouter.get('/bienes/:id/obtener-valor', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Obtener el bien por ID
+    const bien = await obtenerBienPorId(id);
+    if (!bien) {
+      res.status(404).send({ mensaje: 'Bien no encontrado.' });
+      return;
+    }
+
+    // Devolver el valor del bien
+    res.status(200).send({ mensaje: 'Valor del bien obtenido correctamente.', valor: bien.valor });
+  } catch (error) {
+    res.status(500).send({ mensaje: 'Error al obtener el valor del bien.', error });
+  }
+});
+
+
 // GET - Obtener un bien por ID
 bienesRouter.get('/bienes/:id', async (req, res) => {
   try {
@@ -47,6 +72,8 @@ bienesRouter.get('/bienes/:id', async (req, res) => {
     res.status(500).send({ mensaje: 'Error al obtener el bien', error });
   }
 });
+
+
 
 // PATCH - Actualizar un bien por ID
 bienesRouter.patch('/bienes/:id', async (req, res) => {
@@ -85,45 +112,38 @@ bienesRouter.delete('/bienes/:id', async (req, res) => {
   }
 });
 
-// OPTIONS - Buscar y ordenar bienes según criterios
+// OPTIONS - Ordenar bienes
 bienesRouter.options('/bienes/ordenar', async (req, res) => {
   try {
     const { ordenar, ascendente } = req.body;
 
-    // Validar que los parámetros necesarios estén presentes
-    if (!ordenar || typeof ascendente === 'undefined') {
-      res.status(400).send({ mensaje: 'Se requieren los campos "ordenar" y "ascendente".' });
+    // Validar que "ordenar" sea una clave válida de BienDocumentInterface
+    const camposValidos: (keyof BienDocumentInterface)[] = ['idUnico', 'nombre', 'descripcion', 'valor', 'tipo'];
+    if (!ordenar || !camposValidos.includes(ordenar)) {
+      res.status(400).send({ mensaje: `El campo "${ordenar}" no es válido para ordenar.` });
       return;
     }
 
-    const orden = ascendente ? 1 : -1; // 1 para ascendente, -1 para descendente
     const bienes = await obtenerBienes();
 
-    // Verificar si hay bienes
     if (bienes.length === 0) {
       res.status(404).send({ mensaje: 'No se encontraron bienes.' });
       return;
     }
 
-    // Verificar que el campo "ordenar" sea válido
-    if (!(ordenar in bienes[0])) {
-      res.status(400).send({ mensaje: `El campo "${ordenar}" no es válido para ordenar.` });
-      return;
-    }
-
-    // Ordenar los bienes según el campo y el orden especificado
+    // Ordenar los bienes
     const bienesOrdenados = bienes.sort((a, b) => {
-      const valorA = a[ordenar as keyof BienDocumentInterface];
-      const valorB = b[ordenar as keyof BienDocumentInterface];
-
-      if (valorA < valorB) return -orden;
-      if (valorA > valorB) return orden;
-      return 0;
+      const valorA = a[ordenar as keyof BienDocumentInterface]?.toString().toLowerCase() || '';
+      const valorB = b[ordenar as keyof BienDocumentInterface]?.toString().toLowerCase() || '';
+      return ascendente ? valorA.localeCompare(valorB) : valorB.localeCompare(valorA);
     });
 
-    // Enviar los bienes ordenados
     res.status(200).send(bienesOrdenados);
   } catch (error) {
     res.status(500).send({ mensaje: 'Error al ordenar los bienes.', error });
   }
 });
+
+
+
+
