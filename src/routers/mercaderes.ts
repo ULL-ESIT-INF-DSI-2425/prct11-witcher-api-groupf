@@ -1,5 +1,5 @@
 import express from 'express';
-import { crearMercader, obtenerMercaderPorNombre, obtenerMercaderes , obtenerMercaderPorId, eliminarMercader, actualizarMercader} from '../functions/mercader.functions.js';
+import { crearMercader, obtenerMercaderPorNombre, obtenerMercaderes , obtenerMercaderPorId, eliminarMercader, actualizarMercader, obtenerMercaderesPorEspecialidad, obtenerMercaderesPorUbicacion} from '../functions/mercader.functions.js';
 import { MercaderDocumentInterface } from '../schemas/mercader.model.js';
 
 export const mercaderRouter = express.Router();
@@ -156,3 +156,46 @@ mercaderRouter.options('/mercaderes/ordenar', async (req, res) => {
 });
 
 
+// GET - Obtener mercaderes por ubicación
+mercaderRouter.get('/mercaderes/ubicacion/:ubicacion', async (req, res) => {
+  try {
+    const { ubicacion } = req.params;
+    const mercaderes = await obtenerMercaderesPorUbicacion(ubicacion);
+
+    if (mercaderes.length > 0) {
+      res.status(200).send(mercaderes);
+    } else {
+      res.status(404).send({ 
+        mensaje: `No se encontraron mercaderes en '${ubicacion}'.`,
+        sugerencia: 'Ubicaciones válidas: Novigrado, Oxenfurt, Velen, Skellige, Toussaint'
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ 
+      mensaje: 'Error al buscar mercaderes por ubicación', 
+      error: error instanceof Error ? error.message : error 
+    });
+  }
+});
+
+// GET - Obtener mercaderes por especialidad
+mercaderRouter.get('/mercaderes/especialidad/:especialidad', async (req, res) => {
+  try {
+    const { especialidad } = req.params;
+    const mercaderes = await obtenerMercaderesPorEspecialidad(especialidad);
+
+    if (mercaderes.length > 0) {
+      res.status(200).send(mercaderes);
+    } else {
+      res.status(404).send({ 
+        mensaje: `No se encontraron mercaderes especializados en '${especialidad}'.`,
+        sugerencia: 'Especialidades válidas: Armas, Armaduras, Pociones, Ingredientes, Libros, Miscelánea'
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ 
+      mensaje: 'Error al buscar mercaderes por especialidad', 
+      error: error instanceof Error ? error.message : error 
+    });
+  }
+});

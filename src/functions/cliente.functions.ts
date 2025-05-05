@@ -85,3 +85,17 @@ export async function quitarDineroCliente(clienteId: string, dinero: number) {
   await cliente.save();
   return cliente;
 }
+
+/**
+ * Obtiene clientes por su tipo
+ */
+export async function obtenerClientesPorTipo(tipo: string) {
+  return await Cliente.find({ tipo });
+}
+
+/**
+ * Obtiene clientes por cantidad de dinero
+ */
+export async function obtenerClientesPorDinero(dinero: number) {
+  return await Cliente.find({ dinero });
+}

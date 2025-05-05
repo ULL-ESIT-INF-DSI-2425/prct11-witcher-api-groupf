@@ -42,3 +42,16 @@ export async function actualizarBien(id: string, updates: BienDocumentInterface)
 export async function eliminarBien(id: string) {
   return await Bien.findByIdAndDelete(id);
 }
+
+
+/**
+ * Obtiene bienes por su tipo
+ */
+export async function obtenerBienesPorTipo(tipo: string) {
+  return await Bien.find({ tipo });
+}
+
+// encontrar bienes por valor
+export async function obtenerBienesPorValor(valor: number) {
+  return await Bien.find({ valor });
+}

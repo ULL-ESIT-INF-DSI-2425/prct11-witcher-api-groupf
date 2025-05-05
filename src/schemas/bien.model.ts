@@ -1,7 +1,6 @@
 import { Schema, model, Document } from 'mongoose';
 
 export interface BienDocumentInterface extends Document {
-  idUnico: string;
   nombre: string;
   descripcion: string;
   valor: number;
@@ -9,11 +8,6 @@ export interface BienDocumentInterface extends Document {
 }
 
 const BienSchema = new Schema<BienDocumentInterface>({
-  idUnico: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   nombre: {
     type: String,
     required: true,

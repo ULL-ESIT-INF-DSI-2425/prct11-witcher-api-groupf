@@ -1,12 +1,8 @@
 import express from 'express';
-import { crearBien, obtenerBienes, obtenerBienPorId, actualizarBien, eliminarBien, obtenerBienPorNombre} from '../functions/bien.functions.js';
+import { crearBien, obtenerBienes, obtenerBienPorId, actualizarBien, eliminarBien, obtenerBienPorNombre, obtenerBienesPorTipo, obtenerBienesPorValor} from '../functions/bien.functions.js';
 import { BienDocumentInterface } from '../schemas/bien.model.js';
 
 export const bienesRouter = express.Router();
-
-
-
-
 
 // POST - Crear un nuevo bien
 bienesRouter.post('/bienes', async (req, res) => {
@@ -118,7 +114,7 @@ bienesRouter.options('/bienes/ordenar', async (req, res) => {
     const { ordenar, ascendente } = req.body;
 
     // Validar que "ordenar" sea una clave válida de BienDocumentInterface
-    const camposValidos: (keyof BienDocumentInterface)[] = ['idUnico', 'nombre', 'descripcion', 'valor', 'tipo'];
+    const camposValidos: (keyof BienDocumentInterface)[] = ['nombre', 'descripcion', 'valor', 'tipo'];
     if (!ordenar || !camposValidos.includes(ordenar)) {
       res.status(400).send({ mensaje: `El campo "${ordenar}" no es válido para ordenar.` });
       return;
@@ -145,5 +141,43 @@ bienesRouter.options('/bienes/ordenar', async (req, res) => {
 });
 
 
+// GET - Obtener bienes por tipo
+bienesRouter.get('/bienes/tipo/:tipo', async (req, res) => {
+  try {
+    const { tipo } = req.params;
+    const bienes = await obtenerBienesPorTipo(tipo);
+
+    if (bienes.length > 0) {
+      res.status(200).send(bienes);
+    } else {
+      res.status(404).send({ 
+        mensaje: `No se encontraron bienes del tipo '${tipo}'.`,
+        sugerencia: 'Verifique que el tipo esté escrito correctamente'
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ 
+      mensaje: 'Error al buscar bienes por tipo', 
+      error: error instanceof Error ? error.message : error 
+    });
+  }
+});
+
+// GET - Obtener bienes por valor
+bienesRouter.get('/bienes/valor/:valor', async (req, res) => {
+  try {
+    const { valor } = req.params;
+    const valorNumerico = parseFloat(valor);
+    const bienes = await obtenerBienesPorValor(valorNumerico);
+
+    if (bienes.length > 0) {
+      res.status(200).send(bienes);
+    } else {
+      res.status(404).send({ mensaje: 'No se encontraron bienes con ese valor.' });
+    }
+  } catch (error) {
+    res.status(500).send({ mensaje: 'Error al buscar bienes por valor', error });
+  }
+});
 
 

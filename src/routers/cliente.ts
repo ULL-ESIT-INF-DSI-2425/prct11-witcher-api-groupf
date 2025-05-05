@@ -1,6 +1,6 @@
 import express from 'express';
-import { crearCliente, obtenerClientePorNombre, obtenerClientes , obtenerClientePorId, eliminarCliente, actualizarCliente} from '../functions/cliente.functions.js';
-import { ClienteDocumentInterface } from '../schemas/cliente.model.js';
+import { crearCliente, obtenerClientePorNombre, obtenerClientes , obtenerClientePorId, eliminarCliente, actualizarCliente, obtenerClientesPorDinero, obtenerClientesPorTipo} from '../functions/cliente.functions.js';
+
 
 export const clienteRouter = express.Router();
 
@@ -154,5 +154,41 @@ clienteRouter.options('/clientes/ordenar', async (req, res) => {
 });
 
 
+// GET - Obtener clientes por tipo
+clienteRouter.get('/clientes/tipo/:tipo', async (req, res) => {
+  try {
+    const { tipo } = req.params;
+    const clientes = await obtenerClientesPorTipo(tipo);
 
+    if (clientes.length > 0) {
+      res.status(200).send(clientes);
+    } else {
+      res.status(404).send({ 
+        mensaje: `No se encontraron clientes del tipo '${tipo}'.`,
+        sugerencia: 'Los tipos válidos son: Cazador, Brujo, Noble, Bandido, Mercenario, Aldeano'
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ 
+      mensaje: 'Error al buscar clientes por tipo', 
+      error: error instanceof Error ? error.message : error 
+    });
+  }
+});
 
+// GET - Obtener clientes por dinero exacto
+clienteRouter.get('/clientes/dinero/:dinero', async (req, res) => {
+  try {
+    const { dinero } = req.params;
+    const dineroNumerico = parseFloat(dinero);
+    const clientes = await obtenerClientesPorDinero(dineroNumerico);
+
+    if (clientes.length > 0) {
+      res.status(200).send(clientes);
+    } else {
+      res.status(404).send({ mensaje: 'No se encontraron clientes con esa cantidad exacta de dinero.' });
+    }
+  } catch (error) {
+    res.status(500).send({ mensaje: 'Error al buscar clientes por dinero', error });
+  }
+});

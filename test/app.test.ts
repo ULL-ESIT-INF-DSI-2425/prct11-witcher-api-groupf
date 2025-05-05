@@ -63,7 +63,6 @@ describe('API Tests', () => {
     const response = await request(app)
       .post('/bienes')
       .send({
-        idUnico: `Bien-${uuidv4()}`,
         nombre: `Bien-${uuidv4()}`,
         descripcion: 'Una espada mágica para monstruos',
         valor: 200,
@@ -129,7 +128,6 @@ describe('API Tests', () => {
   // Test para la ruta OPTIONS /bienes/ordenar
   it('Debería ordenar los bienes por nombre en orden descendente', async () => {
     await request(app).post('/bienes').send({
-      idUnico: `Bien-${uuidv4()}`,
       nombre: 'Escudo de Acero',
       descripcion: 'Un escudo resistente',
       valor: 150,
@@ -137,7 +135,6 @@ describe('API Tests', () => {
     });
 
     await request(app).post('/bienes').send({
-      idUnico: `Bien-${uuidv4()}`,
       nombre: 'Espada de Plata',
       descripcion: 'Una espada mágica para monstruos',
       valor: 300,

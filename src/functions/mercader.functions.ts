@@ -97,3 +97,17 @@ export async function addDineroToMercader(mercaderId: string, dinero: number) {
   await mercader.save();
   return mercader;
 }
+
+/**
+ * Obtiene mercaderes por ubicación
+ */
+export async function obtenerMercaderesPorUbicacion(ubicacion: string) {
+  return await Mercader.find({ ubicacion });
+}
+
+/**
+ * Obtiene mercaderes por especialidad
+ */
+export async function obtenerMercaderesPorEspecialidad(especialidad: string) {
+  return await Mercader.find({ especialidad });
+}
