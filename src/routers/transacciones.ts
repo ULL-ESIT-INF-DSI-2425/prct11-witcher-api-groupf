@@ -187,6 +187,21 @@ transaccionRouter.options('/transacciones/ordenar', async (req, res) => {
   }
 });
 
+//DELETE
+transaccionRouter.delete('/transacciones/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const transaccionEliminada = await obtenerTransaccionPorId(id);
+
+    if (transaccionEliminada) {
+      res.status(200).send({ mensaje: 'Transacción eliminada correctamente.', transaccion: transaccionEliminada });
+    } else {
+      res.status(404).send({ mensaje: 'Transacción no encontrada.' });
+    }
+  } catch (error) {
+    res.status(500).send({ mensaje: 'Error al eliminar la transacción', error });
+  }
+});
 
 
 
