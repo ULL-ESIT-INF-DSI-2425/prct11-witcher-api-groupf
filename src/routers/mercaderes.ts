@@ -1,6 +1,6 @@
 import express from 'express';
 import { crearMercader, obtenerMercaderPorNombre, obtenerMercaderes , obtenerMercaderPorId, eliminarMercader, actualizarMercader, obtenerMercaderesPorEspecialidad, obtenerMercaderesPorUbicacion} from '../functions/mercader.functions.js';
-import { MercaderDocumentInterface } from '../schemas/mercader.model.js';
+
 
 export const mercaderRouter = express.Router();
 
@@ -111,50 +111,6 @@ mercaderRouter.delete('/mercaderes/:id', async (req, res) => {
     res.status(500).send({ mensaje: 'Error al eliminar el mercader', error });
   }
 });
-
-// OPTIONS - Ordenar mercaderes
-mercaderRouter.options('/mercaderes/ordenar', async (req, res) => {
-  try {
-    const { ordenar, ascendente } = req.body;
-
-    // Validar que los parámetros necesarios estén presentes
-    if (!ordenar || typeof ascendente === 'undefined') {
-      res.status(400).send({ mensaje: 'Se requieren los campos "ordenar" y "ascendente".' });
-      return;
-    }
-
-    const orden = ascendente ? 1 : -1; // 1 para ascendente, -1 para descendente
-    const mercaderes = await obtenerMercaderes();
-
-    // Verificar si hay mercaderes
-    if (mercaderes.length === 0) {
-      res.status(404).send({ mensaje: 'No se encontraron mercaderes.' });
-      return;
-    }
-
-    // Verificar que el campo "ordenar" sea válido
-    if (!(ordenar in mercaderes[0])) {
-      res.status(400).send({ mensaje: `El campo "${ordenar}" no es válido para ordenar.` });
-      return;
-    }
-
-    // Ordenar los mercaderes según el campo y el orden especificado
-    const mercaderesOrdenados = mercaderes.sort((a, b) => {
-      const valorA = a[ordenar as keyof MercaderDocumentInterface]?.toString().toLowerCase();
-      const valorB = b[ordenar as keyof MercaderDocumentInterface]?.toString().toLowerCase();
-
-      if (valorA < valorB) return -orden;
-      if (valorA > valorB) return orden;
-      return 0;
-    });
-
-    // Enviar los mercaderes ordenados
-    res.status(200).send(mercaderesOrdenados);
-  } catch (error) {
-    res.status(500).send({ mensaje: 'Error al ordenar los mercaderes.', error });
-  }
-});
-
 
 // GET - Obtener mercaderes por ubicación
 mercaderRouter.get('/mercaderes/ubicacion/:ubicacion', async (req, res) => {

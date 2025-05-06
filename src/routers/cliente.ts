@@ -113,47 +113,6 @@ clienteRouter.delete('/clientes/:id', async (req, res) => {
   }
 });
 
-// OPTIONS - Ordenar clientes
-clienteRouter.options('/clientes/ordenar', async (req, res) => {
-  try {
-    const { ordenar, ascendente } = req.body;
-
-    // Validar que los parámetros necesarios estén presentes
-    if (!ordenar || typeof ascendente === 'undefined') {
-      res.status(400).send({ mensaje: 'Se requieren los campos "ordenar" y "ascendente".' });
-      return;
-    }
-
-    const orden = ascendente ? 1 : -1; // 1 para ascendente, -1 para descendente
-    const clientes = await obtenerClientes();
-
-    // Verificar si hay clientes
-    if (clientes.length === 0) {
-      res.status(404).send({ mensaje: 'No se encontraron clientes.' });
-      return;
-    }
-
-    // Verificar que el campo "ordenar" sea válido
-    if (!(ordenar in clientes[0])) {
-      res.status(400).send({ mensaje: `El campo "${ordenar}" no es válido para ordenar.` });
-      return;
-    }
-
-    // Ordenar los clientes según el campo y el orden especificado
-    const clientesOrdenados = clientes.sort((a, b) => {
-      const valorA = a.nombre.toLowerCase();
-      const valorB = b.nombre.toLowerCase();
-      return ascendente ? valorA.localeCompare(valorB) : valorB.localeCompare(valorA);
-    });
-
-    // Enviar los clientes ordenados
-    res.status(200).send(clientesOrdenados);
-  } catch (error) {
-    res.status(500).send({ mensaje: 'Error al ordenar los clientes.', error });
-  }
-});
-
-
 // GET - Obtener clientes por tipo
 clienteRouter.get('/clientes/tipo/:tipo', async (req, res) => {
   try {

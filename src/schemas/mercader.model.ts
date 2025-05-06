@@ -1,4 +1,5 @@
 import { Document, Schema, model } from 'mongoose';
+import { BienCantidad } from './cliente.model.js';
 
 export interface MercaderDocumentInterface extends Document {
   nombre: string;
@@ -7,8 +8,21 @@ export interface MercaderDocumentInterface extends Document {
   especialidad: string;
   reputacion: number;
   dinero: number;
-  inventario: string[];
+  inventario: BienCantidad[];  // Cambiado de string[] a BienCantidad[]
 }
+
+// Esquema para BienCantidad
+const BienCantidadSchema = new Schema<BienCantidad>({
+  bienId: {
+    type: String,
+    required: true,
+  },
+  cantidad: {
+    type: Number,
+    required: true,
+    min: [1, 'La cantidad debe ser al menos 1']
+  }
+});
 
 const MercaderSchema = new Schema<MercaderDocumentInterface>({
   nombre: {
@@ -48,7 +62,7 @@ const MercaderSchema = new Schema<MercaderDocumentInterface>({
     min: [0, 'El dinero no puede ser negativo']
   },
   inventario: {
-    type: [String],
+    type: [BienCantidadSchema],  // Usamos el esquema definido arriba
     default: []
   }
 });

@@ -45,11 +45,14 @@ export async function actualizarMercader(id: string, updates: MercaderDocumentIn
 export async function eliminarMercader(id: string) {
   return await Mercader.findByIdAndDelete(id);
 }
-
 /**
- * Añade un bien al inventario de un mercader (recibe 2 IDs: mercaderId y bienId).
+ * Añade o actualiza un bien en el inventario de un mercader.
+ * Si el bien ya existe, suma la cantidad. Si no existe, lo añade.
  */
-export async function addBienToMercader(mercaderId: string, bienId: string) {
+export async function addBienToMercader(
+  mercaderId: string, 
+  { bienId, cantidad }: { bienId: string, cantidad: number }
+) {
   const mercader = await Mercader.findById(mercaderId);
   if (!mercader) throw new Error('Mercader no encontrado');
   
@@ -59,34 +62,81 @@ export async function addBienToMercader(mercaderId: string, bienId: string) {
   // Inicializa inventario si es undefined (según esquema)
   if (!mercader.inventario) mercader.inventario = []; 
 
-  // Evita duplicados
-  if (!mercader.inventario.includes(bienId)) {
-    mercader.inventario.push(bienId);
-    await mercader.save();
+  // Busca si el bien ya existe en el mercader
+  const bienExistenteIndex = mercader.inventario.findIndex(item => item.bienId.toString() === bienId);
+
+  if (bienExistenteIndex !== -1) {
+    // Si existe, suma la cantidad
+    mercader.inventario[bienExistenteIndex].cantidad += cantidad;
+  } else {
+    // Si no existe, lo añade
+    mercader.inventario.push({ bienId, cantidad });
   }
-  return mercader;
-}
 
-/**
- * Elimina un bien del inventario de un mercader (recibe 2 IDs: mercaderId y bienId).
- */
-export async function removeBienFromMercader(mercaderId: string, bienId: string) {
-  const mercader = await Mercader.findById(mercaderId);
-  if (!mercader) throw new Error('Mercader no encontrado');
-
-  // Filtra el bien a eliminar
-  mercader.inventario = mercader.inventario?.filter(b => b.toString() !== bienId) || [];
   await mercader.save();
   return mercader;
 }
 
-// funcion que recibe un id de mercader y un vetor de ids de bienes y devuelve bool si el mercader tiene todos los bienes
-export async function mercaderTieneBienes(mercaderId: string, bienesIds: string[]) {
+/**
+ * Elimina o reduce la cantidad de un bien del inventario de un mercader.
+ * @returns Mercader actualizado
+ */
+export async function removeBienFromMercader(
+  mercaderId: string, 
+  bienId: string, 
+  cantidad?: number
+) {
   const mercader = await Mercader.findById(mercaderId);
   if (!mercader) throw new Error('Mercader no encontrado');
-  // Verifica si el mercader tiene todos los bienes
-  const tieneTodos = bienesIds.every(bienId => mercader.inventario.includes(bienId));
-  return tieneTodos;
+
+  // Filtro seguro por si inventario es undefined
+  if (!mercader.inventario) mercader.inventario = [];
+
+  const bienIndex = mercader.inventario.findIndex(item => item.bienId.toString() === bienId);
+  
+  if (bienIndex === -1) {
+    return mercader; // El bien no existe, no hay nada que hacer
+  }
+
+  if (cantidad === undefined) {
+    // Eliminar completamente el bien
+    mercader.inventario.splice(bienIndex, 1);
+  } else {
+    // Reducir la cantidad
+    if (cantidad <= 0) throw new Error('La cantidad debe ser positiva');
+    
+    if (mercader.inventario[bienIndex].cantidad <= cantidad) {
+      // Si la cantidad a eliminar es mayor o igual, elimina el bien completamente
+      mercader.inventario.splice(bienIndex, 1);
+    } else {
+      // Reduce la cantidad
+      mercader.inventario[bienIndex].cantidad -= cantidad;
+    }
+  }
+
+  await mercader.save();
+  return mercader;
+}
+
+/**
+ * Verifica si un mercader tiene todos los bienes especificados con las cantidades requeridas
+ * @returns boolean - true si tiene todos los bienes en las cantidades requeridas o mayores
+ */
+export async function mercaderTieneBienes(
+  mercaderId: string, 
+  bienesRequeridos: {bienId: string, cantidad: number}[]
+) {
+  const mercader = await Mercader.findById(mercaderId);
+  if (!mercader) throw new Error('Mercader no encontrado');
+
+  // Verifica si el mercader tiene todos los bienes en las cantidades requeridas
+  return bienesRequeridos.every(requerido => {
+    const bienEnInventario = mercader.inventario.find(item => 
+      item.bienId.toString() === requerido.bienId
+    );
+    
+    return bienEnInventario && bienEnInventario.cantidad >= requerido.cantidad;
+  });
 }
 
 // funcioan para darle dinero a un mercader

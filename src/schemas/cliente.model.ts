@@ -1,19 +1,41 @@
 import { Document, Schema, model } from 'mongoose';
 
+// Interfaz para el tipado del par bien-cantidad
+export interface BienCantidad {
+  bienId: string;
+  cantidad: number;
+}
 
-// Interfaz para el tipado
+// Interfaz para el tipado del cliente
 export interface ClienteDocumentInterface extends Document {
   nombre: string;
   tipo: 'Cazador' | 'Brujo' | 'Noble' | 'Bandido' | 'Mercenario' | 'Aldeano';
   dinero: number;
-  bienes: string[];
+  bienes: BienCantidad[];  // Cambiado de string[] a BienCantidad[]
   historia?: string;
 }
 
 // Validadores
 const validadorDinero = (value: number) => value >= 0;
+const validadorCantidad = (value: number) => value > 0;  // Validador para cantidad de bienes
 
-// Esquema
+// Esquema para BienCantidad
+const BienCantidadSchema = new Schema<BienCantidad>({
+  bienId: {
+    type: String,
+    required: true,
+  },
+  cantidad: {
+    type: Number,
+    required: true,
+    validate: {
+      validator: validadorCantidad,
+      message: 'La cantidad debe ser mayor que cero.'
+    }
+  }
+});
+
+// Esquema del Cliente
 const ClienteSchema = new Schema<ClienteDocumentInterface>({
   nombre: {
     type: String,
@@ -39,7 +61,7 @@ const ClienteSchema = new Schema<ClienteDocumentInterface>({
     },
   },
   bienes: {
-    type: [String],
+    type: [BienCantidadSchema],  // Usamos el esquema definido arriba
     default: [],
   },
   historia: {
