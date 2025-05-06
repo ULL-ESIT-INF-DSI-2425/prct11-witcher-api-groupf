@@ -30,7 +30,7 @@ describe("API de Bienes", () => {
       const response = await request(app)
         .post("/bienes")
         .send(nuevoBien)
-        .expect(201);
+        .expect(201); //Esto es un expec de super test
 
       expect(response.body).toMatchObject(nuevoBien);
       expect(response.body._id).toBeDefined();

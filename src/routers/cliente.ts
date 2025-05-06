@@ -95,8 +95,6 @@ clienteRouter.patch('/clientes/:id', async (req, res) => {
   }
 });
 
-
-
 // DELETE - Eliminar un cliente por ID
 clienteRouter.delete('/clientes/:id', async (req, res) => {
   try {
@@ -110,6 +108,40 @@ clienteRouter.delete('/clientes/:id', async (req, res) => {
     }
   } catch (error) {
     res.status(500).send({ mensaje: 'Error al eliminar el cliente', error });
+  }
+});
+
+// PATCH - Actualizar un cliente por nombre
+clienteRouter.patch('/clientes/nombre/:nombre', async (req, res) => {
+  try {
+    const { nombre } = req.params;
+    const updates = req.body;
+
+    if(updates._id || updates.nombre) {
+      res.status(400).send({ 
+        mensaje: 'No se puede modificar el ID del cliente.' });
+      return;
+    }
+
+    // Primero encontrar el cliente por nombre
+    const cliente = await obtenerClientePorNombre(nombre);
+    if (!cliente) {
+      res.status(404).send({ mensaje: 'Cliente no encontrado.' });
+      return;
+    }
+
+    const clienteActualizado = await actualizarCliente(cliente[0]._id as string, updates);
+
+    if(clienteActualizado) {
+      res.status(200).send(clienteActualizado);
+    } else {
+      res.status(404).send({ mensaje: 'Cliente no encontrado.' });
+    }
+  } catch (error) {
+    res.status(500).send({ 
+      mensaje: 'Error al actualizar el cliente', 
+      error: error instanceof Error ? error.message : error
+    });
   }
 });
 

@@ -14,6 +14,7 @@ bienesRouter.post('/bienes', async (req, res) => {
   }
 });
 
+
 // GET - Obtener bienes (todos o por filtros)
 bienesRouter.get('/bienes', async (req, res) => {
   try {
@@ -26,7 +27,7 @@ bienesRouter.get('/bienes', async (req, res) => {
     if (bienes.length > 0) {
       res.status(200).send(bienes);
     } else {
-      res.status(404).send({ mensaje: 'No se encontraron clientes.' });
+      res.status(404).send({ mensaje: 'No se encontraron bienes.' });
     }
   } catch (error) {
     res.status(500).send({ mensaje: 'Error interno del servidor', error });
@@ -93,6 +94,7 @@ bienesRouter.patch('/bienes/:id', async (req, res) => {
   }
 });
 
+
 // DELETE - Eliminar un bien por ID
 bienesRouter.delete('/bienes/:id', async (req, res) => {
   try {
@@ -105,6 +107,41 @@ bienesRouter.delete('/bienes/:id', async (req, res) => {
     }
   } catch (error) {
     res.status(500).send({ mensaje: 'Error al eliminar el bien', error });
+  }
+});
+
+// PATCH - Actualizar un bien por nombre
+bienesRouter.patch('/bienes/nombre/:nombre', async (req, res) => {
+  try {
+    const { nombre } = req.params;
+    const updates = req.body;
+
+    if (updates._id || updates.nombre) {
+      res.status(400).send({ 
+        mensaje: 'No se puede modificar el ID o el nombre del bien.' 
+      });
+      return;
+    }
+
+    // Primero encontrar el bien por nombre
+    const bienes = await obtenerBienPorNombre(nombre);
+    if (bienes.length === 0) {
+      res.status(404).send({ mensaje: 'Bien no encontrado' });
+      return;
+    }
+
+    const bienActualizado = await actualizarBien(bienes[0]._id as string, updates);
+    
+    if (bienActualizado) {
+      res.status(200).send(bienActualizado);
+    } else {
+      res.status(404).send({ mensaje: 'Error al actualizar el bien' });
+    }
+  } catch (error) {
+    res.status(500).send({ 
+      mensaje: 'Error al actualizar el bien', 
+      error: error instanceof Error ? error.message : error 
+    });
   }
 });
 
