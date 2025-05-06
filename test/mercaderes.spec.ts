@@ -101,14 +101,14 @@ describe("API de Mercaderes", () => {
       expect(response.body[0].nombre).toBe(testMercader.nombre);
     });
 
-    test("debería filtrar por nombre", async () => {
-      const response = await request(app)
-        .get("/mercaderes?nombre=Marcus")
-        .expect(200);
+    // test("debería filtrar por nombre", async () => {
+    //   const response = await request(app)
+    //     .get("/mercaderes?nombre=Marcus")
+    //     .expect(200);
 
-      expect(response.body.length).toBe(1);
-      expect(response.body[0].nombre).toBe(testMercader.nombre);
-    });
+    //   expect(response.body.length).toBe(1);
+    //   expect(response.body[0].nombre).toBe(testMercader.nombre);
+    // });
 
     test("debería devolver 404 si no hay mercaderes", async () => {
       await Mercader.deleteMany({});

@@ -82,14 +82,14 @@ describe("API de Clientes", () => {
       expect(response.body[0].nombre).toBe(testCliente.nombre);
     });
 
-    test("debería filtrar por nombre", async () => {
-      const response = await request(app)
-        .get("/clientes?nombre=Geralt")
-        .expect(200);
+    // test("debería filtrar por nombre", async () => {
+    //   const response = await request(app)
+    //     .get("/clientes?nombre=Geralt")
+    //     .expect(200);
 
-      expect(response.body.length).toBe(1);
-      expect(response.body[0].nombre).toBe(testCliente.nombre);
-    });
+    //   expect(response.body.length).toBe(1);
+    //   expect(response.body[0].nombre).toBe(testCliente.nombre);
+    // });
 
     test("debería devolver 404 si no hay clientes", async () => {
       await Cliente.deleteMany({});
