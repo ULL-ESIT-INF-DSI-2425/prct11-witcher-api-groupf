@@ -110,6 +110,7 @@ bienesRouter.delete('/bienes/:id', async (req, res) => {
   }
 });
 
+
 // PATCH - Actualizar un bien por nombre
 bienesRouter.patch('/bienes/nombre/:nombre', async (req, res) => {
   try {
