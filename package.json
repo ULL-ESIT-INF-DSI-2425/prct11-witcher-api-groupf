@@ -7,7 +7,8 @@
     "app": "node dist/index.js",
     "doc": "typedoc",
     "test": "vitest run",
-    "coverage": "vitest run --coverage --coverage.include src/"
+    "coverage": "vitest run --coverage --coverage.include src/",
+    "build": "npm install --legacy-peer-deps && vite build"
   },
   "keywords": [],
   "author": "",
