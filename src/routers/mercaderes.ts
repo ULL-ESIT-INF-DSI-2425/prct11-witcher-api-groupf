@@ -112,6 +112,41 @@ mercaderRouter.delete('/mercaderes/:id', async (req, res) => {
   }
 });
 
+
+// PATCH - Actualizar un mercader por nombre
+mercaderRouter.patch('/mercaderes/nombre/:nombre', async (req, res) => {
+  try {
+    const { nombre } = req.params;
+    const updates = req.body;
+
+    if(updates._id || updates.nombre) {
+      res.status(400).send({ 
+        mensaje: 'No se puede modificar el ID del mercader.' });
+      return;
+    }
+
+    // Primero encontrar el cliente por nombre
+    const mercader = await obtenerMercaderPorNombre(nombre);
+    if (!mercader) {
+      res.status(404).send({ mensaje: 'Mercader no encontrado.' });
+      return;
+    }
+
+    const mercaderActualizado = await actualizarMercader(mercader[0]._id as string, updates);
+
+    if(mercaderActualizado) {
+      res.status(200).send(mercaderActualizado);
+    } else {
+      res.status(404).send({ mensaje: 'Mercader no encontrado.' });
+    }
+  } catch (error) {
+    res.status(500).send({ 
+      mensaje: 'Error al actualizar el mercader', 
+      error: error instanceof Error ? error.message : error
+    });
+  }
+});
+
 // GET - Obtener mercaderes por ubicación
 mercaderRouter.get('/mercaderes/ubicacion/:ubicacion', async (req, res) => {
   try {
