@@ -1,5 +1,5 @@
 # [DSI] Práctica 12: API REST con Node/Express para gestionar La Posada del Lobo Blanco
-## PÁGINA: [WEB DOCUMENTACIÓN](https://ull-esit-inf-dsi-2425.github.io/prct07-witcher-datamodel-groupf/)
+## PÁGINA: [WEB DOCUMENTACIÓN]([https://ull-esit-inf-dsi-2425.github.io/prct07-witcher-datamodel-groupf/](https://ull-esit-inf-dsi-2425.github.io/prct11-witcher-api-groupf/))
 * Universidad de La Laguna
 * Grado en Ingeniería Informática
 * Curso: Tercero de Ingeniería Informática
