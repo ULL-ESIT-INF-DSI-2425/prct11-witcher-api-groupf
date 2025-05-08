@@ -11,9 +11,7 @@ const testBien = {
 };
 
 beforeEach(async () => {
-  // Limpiar la base de datos antes de cada prueba
   await Bien.deleteMany({});
-  // Insertar un bien de prueba
   await new Bien(testBien).save();
 });
 
@@ -35,7 +33,6 @@ describe("API de Bienes", () => {
       expect(response.body).toMatchObject(nuevoBien);
       expect(response.body._id).toBeDefined();
 
-      // Verificar que se guardó en la base de datos
       const bienGuardado = await Bien.findById(response.body._id);
       expect(bienGuardado).not.toBeNull();
       expect(bienGuardado?.nombre).toBe(nuevoBien.nombre);
@@ -48,7 +45,6 @@ describe("API de Bienes", () => {
           nombre: "Bien incompleto",
           valor: 100,
           tipo: "arma"
-          // Falta descripcion
         })
         .expect(400);
 
@@ -67,7 +63,6 @@ describe("API de Bienes", () => {
     });
 
     test("debería filtrar por nombre", async () => {
-      // Buscar el nombre exacto que sabemos que existe
       const response = await request(app)
         .get("/bienes?nombre=Espada de prueba")
         .expect(200);
@@ -97,7 +92,7 @@ describe("API de Bienes", () => {
     });
 
     test("debería devolver 404 si el bien no existe", async () => {
-      const idInexistente = "123456789012345678901234"; // ID válido pero no existente
+      const idInexistente = "123456789012345678901234";
       const response = await request(app)
         .get(`/bienes/${idInexistente}`)
         .expect(404);
@@ -118,8 +113,8 @@ describe("API de Bienes", () => {
 
       expect(response.body.valor).toBe(150);
 
-      // Verificar en la base de datos
-      const bienActualizado = await Bien.findById(bien?._id);
+      const bienActualizado       
+      = await Bien.findById(bien?._id);
       expect(bienActualizado?.valor).toBe(150);
     });
 
@@ -145,7 +140,6 @@ describe("API de Bienes", () => {
 
       expect(response.body.valor).toBe(200);
 
-      // Verificar en la base de datos
       const bienActualizado = await Bien.findOne({ nombre: testBien.nombre });
       expect(bienActualizado?.valor).toBe(200);
     });
@@ -169,7 +163,6 @@ describe("API de Bienes", () => {
 
       expect(response.body).toHaveProperty("mensaje", "Bien eliminado correctamente");
 
-      // Verificar que se eliminó
       const bienEliminado = await Bien.findById(bien?._id);
       expect(bienEliminado).toBeNull();
     });
@@ -183,7 +176,6 @@ describe("API de Bienes", () => {
 
       expect(response.body).toHaveProperty("mensaje", "Bien eliminado correctamente");
 
-      // Verificar que se eliminó
       const bienEliminado = await Bien.findOne({ nombre: testBien.nombre });
       expect(bienEliminado).toBeNull();
     });

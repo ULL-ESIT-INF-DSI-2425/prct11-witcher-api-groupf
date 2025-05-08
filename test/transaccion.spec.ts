@@ -12,13 +12,11 @@ let clienteId: string;
 let transaccionId: string;
 
 beforeEach(async () => {
-  // Limpiar la base de datos antes de cada prueba
   await Bien.deleteMany({});
   await Mercader.deleteMany({});
-  await Cliente.deleteMany({});
+  await Cliente.deleteMany({});  
 
-  
-  // Crear un bien
+
   const resBien = await request(app).post('/bienes').send({
     nombre: 'Espada de plata',
     descripcion: 'Ideal para monstruos',
@@ -27,7 +25,6 @@ beforeEach(async () => {
   });
   bienId = resBien.body._id;
 
-  // Crear un mercader con ese bien
   const resMercader = await request(app).post('/mercaderes').send({
     nombre: 'Hattori',
     tienda: 'Forja Élite',
@@ -44,12 +41,11 @@ beforeEach(async () => {
   });
   mercaderId = resMercader.body._id;
 
-  // Crear un cliente con suficiente dinero
   const resCliente = await request(app).post('/clientes').send({
     nombre: 'Geralt',
     tipo: 'Brujo',
     dinero: 500,
-    bienes: [] // el campo correcto es "bienes", no "inventario"
+    bienes: [] 
   });
   clienteId = resCliente.body._id;
 });
@@ -70,8 +66,7 @@ describe('Pruebas de Transacciones - POST y GET', () => {
         }
       ]
     });
-    console.log('####################   CREAR TRANSACCION:', res.status, res.body); // ⬅️ AÑADIR ESTO
-    // muestra los ids que se han creado
+    console.log('####################   CREAR TRANSACCION:', res.status, res.body); 
     console.log('Bien ID:', bienId);
     console.log('Mercader ID:', mercaderId);
     console.log('Cliente ID:', clienteId);
@@ -130,7 +125,7 @@ describe('Validaciones de transacción (casos negativos)', () => {
     const res = await request(app).post('/transacciones').send({
       clienteId,
       mercaderId,
-      bienes: [{ bienId, cantidad: 100 }] // total = 100 * 100 = 10.000
+      bienes: [{ bienId, cantidad: 100 }] 
     });
     expect(res.status).toBe(400);
     expect(res.body.mensaje).toMatch(/suficiente dinero/i);
@@ -158,7 +153,6 @@ describe('Validaciones de transacción (casos negativos)', () => {
 
  describe('PATCH y DELETE de transacciones', () => {
   test('Debería actualizar una transacción existente (PATCH /transacciones/:id)', async () => {
-    // Primero, crea una transacción válida
     const resCrear = await request(app).post('/transacciones').send({
       clienteId,
       mercaderId,
@@ -171,7 +165,6 @@ describe('Validaciones de transacción (casos negativos)', () => {
     });
     const idTransaccion = resCrear.body._id;
 
-    // Ahora, intenta actualizarla (por ejemplo, agregar un campo extra ficticio)
     const res = await request(app).patch(`/transacciones/${idTransaccion}`).send({
       bienes: [
         {

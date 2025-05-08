@@ -23,11 +23,8 @@ const testBien = {
 };
 
 beforeEach(async () => {
-  // Limpiar las bases de datos antes de cada prueba
   await Mercader.deleteMany({});
   await Bien.deleteMany({});
-  
-  // Insertar datos de prueba
   await new Mercader(testMercader).save();
   await new Bien(testBien).save();
 });
@@ -52,7 +49,6 @@ describe("API de Mercaderes", () => {
       expect(response.body).toMatchObject(nuevoMercader);
       expect(response.body._id).toBeDefined();
 
-      // Verificar en la base de datos
       const mercaderGuardado = await Mercader.findById(response.body._id);
       expect(mercaderGuardado).not.toBeNull();
       expect(mercaderGuardado?.nombre).toBe(nuevoMercader.nombre);
@@ -101,15 +97,6 @@ describe("API de Mercaderes", () => {
       expect(response.body[0].nombre).toBe(testMercader.nombre);
     });
 
-    // test("debería filtrar por nombre", async () => {
-    //   const response = await request(app)
-    //     .get("/mercaderes?nombre=Marcus")
-    //     .expect(200);
-
-    //   expect(response.body.length).toBe(1);
-    //   expect(response.body[0].nombre).toBe(testMercader.nombre);
-    // });
-
     test("debería devolver 404 si no hay mercaderes", async () => {
       await Mercader.deleteMany({});
       const response = await request(app)
@@ -154,7 +141,6 @@ describe("API de Mercaderes", () => {
 
       expect(response.body.reputacion).toBe(5);
 
-      // Verificar en la base de datos
       const mercaderActualizado = await Mercader.findById(mercader?._id);
       expect(mercaderActualizado?.reputacion).toBe(5);
     });
@@ -179,7 +165,6 @@ describe("API de Mercaderes", () => {
 
       expect(response.body).toHaveProperty("mensaje", "Mercader eliminado correctamente.");
 
-      // Verificar que se eliminó
       const mercaderEliminado = await Mercader.findById(mercader?._id);
       expect(mercaderEliminado).toBeNull();
     });

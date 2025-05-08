@@ -13,11 +13,8 @@ const testCliente = {
 };
 
 beforeEach(async () => {
-  // Limpiar las bases de datos antes de cada prueba
   await Cliente.deleteMany({});
   await Bien.deleteMany({});
-  
-  // Insertar un cliente de prueba
   await new Cliente(testCliente).save();
 });
 
@@ -39,7 +36,6 @@ describe("API de Clientes", () => {
       expect(response.body).toMatchObject(nuevoCliente);
       expect(response.body._id).toBeDefined();
 
-      // Verificar en la base de datos
       const clienteGuardado = await Cliente.findById(response.body._id);
       expect(clienteGuardado).not.toBeNull();
       expect(clienteGuardado?.nombre).toBe(nuevoCliente.nombre);
@@ -81,15 +77,6 @@ describe("API de Clientes", () => {
       expect(response.body.length).toBe(1);
       expect(response.body[0].nombre).toBe(testCliente.nombre);
     });
-
-    // test("debería filtrar por nombre", async () => {
-    //   const response = await request(app)
-    //     .get("/clientes?nombre=Geralt")
-    //     .expect(200);
-
-    //   expect(response.body.length).toBe(1);
-    //   expect(response.body[0].nombre).toBe(testCliente.nombre);
-    // });
 
     test("debería devolver 404 si no hay clientes", async () => {
       await Cliente.deleteMany({});
@@ -134,7 +121,6 @@ describe("API de Clientes", () => {
 
       expect(response.body.dinero).toBe(600);
 
-      // Verificar en la base de datos
       const clienteActualizado = await Cliente.findById(cliente?._id);
       expect(clienteActualizado?.dinero).toBe(600);
     });
@@ -159,7 +145,6 @@ describe("API de Clientes", () => {
 
       expect(response.body).toHaveProperty("mensaje", "Cliente eliminado correctamente.");
 
-      // Verificar que se eliminó
       const clienteEliminado = await Cliente.findById(cliente?._id);
       expect(clienteEliminado).toBeNull();
     });
