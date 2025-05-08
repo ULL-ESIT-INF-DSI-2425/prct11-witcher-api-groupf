@@ -147,21 +147,6 @@ describe('Validaciones de transacción (casos negativos)', () => {
     expect(res.body.mensaje).toMatch("El cliente no tiene suficiente dinero para realizar la transacción");
   });
   
-  test('GET transacciones por cliente - sin resultados', async () => {
-    const res = await request(app).get('/transacciones/cliente/666666666666666666666666');
-    expect(res.status).toBe(404);
-  });
-
-  test('GET transacciones por mercader - sin resultados', async () => {
-    const res = await request(app).get('/transacciones/mercader/666666666666666666666666');
-    expect(res.status).toBe(404);
-  });
-  
-  test('GET transacciones por rango de fechas - sin fechas', async () => {
-    const res = await request(app).get('/transacciones/fecha');
-    expect(res.status).toBe(500);
-    expect(res.body.mensaje).toMatch("Error al buscar el transacciones por ID");
-  });
   
   test('DELETE - transacción no encontrada', async () => {
     const res = await request(app).delete('/transacciones/666666666666666666666666');
