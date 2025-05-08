@@ -53,6 +53,7 @@ const ClienteSchema = new Schema<ClienteDocumentInterface>({
     type: String,
     required: true,
     trim: true,
+    unique: true,
     validate: (value: string) => {
       if (!value.match(/^[A-Z]/)) {
         throw new Error('El nombre debe empezar con mayúscula.');

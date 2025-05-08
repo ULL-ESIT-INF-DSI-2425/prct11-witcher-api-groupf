@@ -39,6 +39,7 @@ const MercaderSchema = new Schema<MercaderDocumentInterface>({
   nombre: {
     type: String,
     required: true,
+    unique: true,
     trim: true,
     validate: (value: string) => {
       if (!value.match(/^[A-Z]/)) {

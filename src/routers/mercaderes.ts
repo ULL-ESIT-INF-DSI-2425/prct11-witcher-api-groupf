@@ -1,5 +1,5 @@
 import express from 'express';
-import { crearMercader, obtenerMercaderPorNombre, obtenerMercaderes , obtenerMercaderPorId, eliminarMercader, actualizarMercader, obtenerMercaderesPorEspecialidad, obtenerMercaderesPorUbicacion} from '../functions/mercader.functions.js';
+import { crearMercader, obtenerMercaderPorNombre, obtenerMercaderes , obtenerMercaderPorId, eliminarMercader, actualizarMercader} from '../functions/mercader.functions.js';
 
 /**
  * Router de Express para manejar las operaciones CRUD de mercaderes.
@@ -62,27 +62,50 @@ mercaderRouter.get('/mercaderes/:id', async (req, res) => {
   }
 });
 
-/**
- * Ruta GET para obtener el dinero de un mercader por ID
- * @returns El dinero del mercader o un mensaje de error
- */
-mercaderRouter.get('/mercaderes/:id/dinero', async (req, res) => {
-  try {
-    const { id } = req.params;
 
-    // Obtener el mercader por ID
-    const mercader = await obtenerMercaderPorId(id);
-    if (!mercader) {
+/**
+ * Ruta PATCH para actualizar un mercader por ID (uusando query)
+ * @returns El mercader actualizado o un mensaje de error
+ */
+mercaderRouter.patch('/mercaderes', async (req, res) => {
+  try {
+
+    const nombre = req.query.nombre?.toString();
+    if (!nombre) {
+      res.status(400).send({ mensaje: 'Se requiere el nombre del mercader como query.' });
+      return;
+    }
+
+    // Buscar el mercader por nombre
+    const mercaderes = await obtenerMercaderPorNombre(nombre);
+    if (mercaderes.length === 0) {
       res.status(404).send({ mensaje: 'Mercader no encontrado.' });
       return;
     }
 
-    // Devolver el dinero del mercader
-    res.status(200).send({ mensaje: 'Dinero del mercader obtenido correctamente.', dinero: mercader.dinero });
+    const mercader = mercaderes[0]; // suponemos que el nombre es único
+    // Obtener el ID del mercader encontrado
+    const id = mercader._id as string;
+    const updates = req.body;
+    
+    if (updates._id) {
+      res.status(400).send({ mensaje: 'No se puede modificar el ID del mercader.' });
+      return;
+    }
+
+    const mercaderActualizado = await actualizarMercader(id, updates);
+
+    if (mercaderActualizado) {
+      res.status(200).send(mercaderActualizado);
+    } else {
+      res.status(404).send({ mensaje: 'Mercader no encontrado.' });
+    }
   } catch (error) {
-    res.status(500).send({ mensaje: 'Error al obtener el dinero del mercader.', error });
+    res.status(400).send({ mensaje: 'Error al actualizar el mercader', error });
   }
 });
+
+
 
 /**
  * Ruta PATCH para actualizar un mercader por ID
@@ -110,6 +133,40 @@ mercaderRouter.patch('/mercaderes/:id', async (req, res) => {
   }
 });
 
+/**
+ * Ruta DELETE para eliminar un mercader por nombre (usando query)
+ * @returns Mensaje de éxito o error
+ */
+mercaderRouter.delete('/mercaderes', async (req, res) => {
+  try {
+    const nombre = req.query.nombre?.toString();
+
+    if (!nombre) {
+      res.status(400).send({ mensaje: 'Se requiere el nombre del mercader como query.' });
+      return;
+    }
+
+    // Buscar el mercader por nombre
+    const mercaderes = await obtenerMercaderPorNombre(nombre);
+
+    if (mercaderes.length === 0) {
+      res.status(404).send({ mensaje: 'Mercader no encontrado.' });
+      return;
+    }
+    // Obtener el ID del mercader encontrado
+    const id = mercaderes[0]._id as string;
+    const mercaderEliminado = await eliminarMercader(id);
+
+    if (mercaderEliminado) {
+      res.status(200).send({ mensaje: 'Mercader eliminado correctamente.', mercader: mercaderEliminado });
+    } else {
+      res.status(404).send({ mensaje: 'No se pudo eliminar el mercader.' });
+    }
+  } catch (error) {
+    res.status(500).send({ mensaje: 'Error al eliminar el mercader', error });
+  }
+});
+
 
 /**
  * Ruta DELETE para eliminar un mercader por ID
@@ -130,91 +187,3 @@ mercaderRouter.delete('/mercaderes/:id', async (req, res) => {
   }
 });
 
-
-/**
- * Ruta PATCH para actualizar un mercader por nombre
- * @returns El mercader actualizado o un mensaje de error
- */
-mercaderRouter.patch('/mercaderes/nombre/:nombre', async (req, res) => {
-  try {
-    const { nombre } = req.params;
-    const updates = req.body;
-
-    if(updates._id || updates.nombre) {
-      res.status(400).send({ 
-        mensaje: 'No se puede modificar el ID del mercader.' });
-      return;
-    }
-
-    // Primero encontrar el cliente por nombre
-    const mercader = await obtenerMercaderPorNombre(nombre);
-    if (!mercader) {
-      res.status(404).send({ mensaje: 'Mercader no encontrado.' });
-      return;
-    }
-
-    const mercaderActualizado = await actualizarMercader(mercader[0]._id as string, updates);
-
-    if(mercaderActualizado) {
-      res.status(200).send(mercaderActualizado);
-    } else {
-      res.status(404).send({ mensaje: 'Mercader no encontrado.' });
-    }
-  } catch (error) {
-    res.status(500).send({ 
-      mensaje: 'Error al actualizar el mercader', 
-      error: error instanceof Error ? error.message : error
-    });
-  }
-});
-
-/**
- * Ruta GET para obtener mercaderes por ubicación
- * @returns Lista de mercaderes de la ubicación especificada o un mensaje de error
- */
-mercaderRouter.get('/mercaderes/ubicacion/:ubicacion', async (req, res) => {
-  try {
-    const { ubicacion } = req.params;
-    const mercaderes = await obtenerMercaderesPorUbicacion(ubicacion);
-
-    if (mercaderes.length > 0) {
-      res.status(200).send(mercaderes);
-    } else {
-      res.status(404).send({ 
-        mensaje: `No se encontraron mercaderes en '${ubicacion}'.`,
-        sugerencia: 'Ubicaciones válidas: Novigrado, Oxenfurt, Velen, Skellige, Toussaint'
-      });
-    }
-  } catch (error) {
-    res.status(500).send({ 
-      mensaje: 'Error al buscar mercaderes por ubicación', 
-      error: error instanceof Error ? error.message : error 
-    });
-  }
-});
-
-
-/**
- * Ruta GET para obtener mercaderes por especialidad
- * @returns Lista de mercaderes de la especialidad especificada o un mensaje de error
- */
-mercaderRouter.get('/mercaderes/especialidad/:especialidad', async (req, res) => {
-  try {
-    const { especialidad } = req.params;
-    const mercaderes = await obtenerMercaderesPorEspecialidad(especialidad);
-
-    if (mercaderes.length > 0) {
-      res.status(200).send(mercaderes);
-    } else {
-      res.status(404).send({ 
-        mensaje: `No se encontraron mercaderes especializados en '${especialidad}'.`,
-        sugerencia: 'Especialidades válidas: Armas, Armaduras, Pociones, Ingredientes, Libros, Miscelánea'
-      });
-    }
-  } catch (error) {
-    res.status(500).send({ 
-      mensaje: 'Error al buscar mercaderes por especialidad', 
-      error: error instanceof Error ? error.message : error 
-    });
-  }
-});

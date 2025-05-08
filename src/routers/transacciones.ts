@@ -103,7 +103,6 @@ transaccionRouter.post('/transacciones', async (req, res) => {
  */
 transaccionRouter.get('/transacciones', async (req, res) => {
   try {
-
     const transacciones =  await obtenerTransaccion();
     if (transacciones.length > 0) {
       res.status(200).send(transacciones);
@@ -135,28 +134,12 @@ transaccionRouter.get('/transacciones/:id', async (req, res) => {
   }
 });
 
+
+
 /**
- * Ruta DELETE para eliminar una transacción por ID
- * @returns Mensaje de éxito o error
- */
-transaccionRouter.delete('/transacciones/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const transaccionEliminada = await obtenerTransaccionPorId(id);
-
-    if (transaccionEliminada) {
-      res.status(200).send({ mensaje: 'Transacción eliminada correctamente.', transaccion: transaccionEliminada });
-    } else {
-      res.status(404).send({ mensaje: 'Transacción no encontrada.' });
-    }
-  } catch (error) {
-    res.status(500).send({ mensaje: 'Error al eliminar la transacción', error });
-  }
-});
-
-
-///========================================================
-// PATCH - Actualizar una transacción por ID
+ * Ruta PATCH para actualizar una transacción por ID
+ * @returns La transacción actualizada o un mensaje de error
+ * */
 transaccionRouter.patch('/transacciones/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -182,66 +165,22 @@ transaccionRouter.patch('/transacciones/:id', async (req, res) => {
   }
 });
 
-// GET - Obtener transacciones por cliente ID
-transaccionRouter.get('/transacciones/cliente/:clienteId', async (req, res) => {
+
+/**
+ * Ruta DELETE para eliminar una transacción por ID
+ * @returns Mensaje de éxito o error
+ */
+transaccionRouter.delete('/transacciones/:id', async (req, res) => {
   try {
-    const { clienteId } = req.params;
-    const transacciones = await obtenerTransaccion();
+    const { id } = req.params;
+    const transaccionEliminada = await obtenerTransaccionPorId(id);
 
-    const transaccionesCliente = transacciones.filter(transaccion => transaccion.clienteId === clienteId);
-
-    if (transaccionesCliente.length > 0) {
-      res.status(200).send(transaccionesCliente);
+    if (transaccionEliminada) {
+      res.status(200).send({ mensaje: 'Transacción eliminada correctamente.', transaccion: transaccionEliminada });
     } else {
-      res.status(404).send({ mensaje: 'No se encontraron transacciones para este cliente.' });
+      res.status(404).send({ mensaje: 'Transacción no encontrada.' });
     }
   } catch (error) {
-    res.status(500).send({ mensaje: 'Error al buscar transacciones por cliente.', error });
-  }
-});
-
-// GET - Obtener transacciones por mercader ID
-transaccionRouter.get('/transacciones/mercader/:mercaderId', async (req, res) => {
-  try {
-    const { mercaderId } = req.params;
-    const transacciones = await obtenerTransaccion();
-
-    const transaccionesMercader = transacciones.filter(transaccion => transaccion.mercaderId === mercaderId);
-
-    if (transaccionesMercader.length > 0) {
-      res.status(200).send(transaccionesMercader);
-    } else {
-      res.status(404).send({ mensaje: 'No se encontraron transacciones para este mercader.' });
-    }
-  } catch (error) {
-    res.status(500).send({ mensaje: 'Error al buscar transacciones por mercader.', error });
-  }
-});
-
-// GET - Obtener transacciones por rango de fechas
-transaccionRouter.get('/transacciones/fecha', async (req, res) => {
-  try {
-    const { inicio, fin } = req.query;
-
-    if (!inicio || !fin) {
-      res.status(400).send({ mensaje: 'Debe proporcionar las fechas de inicio y fin.' });
-      return;
-    }
-
-    const fechaInicio = new Date(inicio.toString());
-    const fechaFin = new Date(fin.toString());
-
-    const transacciones = await obtenerTransaccion();
-    const transaccionesEnRango = transacciones.filter(transaccion =>
-      new Date(transaccion.fecha) >= fechaInicio && new Date(transaccion.fecha) <= fechaFin
-    );
-
-    if (transaccionesEnRango.length > 0) {
-      res.status(200).send(transaccionesEnRango);
-    } else {
-      res.status(404).send({ mensaje: 'No se encontraron transacciones en el rango de fechas especificado.' });
-    }
-  } catch (error) {
-    res.status(500).send({ mensaje: 'Error al buscar transacciones por rango de fechas.', error });
+    res.status(500).send({ mensaje: 'Error al eliminar la transacción', error });
   }
 });

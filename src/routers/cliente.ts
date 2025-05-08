@@ -1,5 +1,5 @@
 import express from 'express';
-import { crearCliente, obtenerClientePorNombre, obtenerClientes , obtenerClientePorId, eliminarCliente, actualizarCliente, obtenerClientesPorDinero, obtenerClientesPorTipo} from '../functions/cliente.functions.js';
+import { crearCliente, obtenerClientePorNombre, obtenerClientes , obtenerClientePorId, eliminarCliente, actualizarCliente} from '../functions/cliente.functions.js';
 
 /**
  * Router de Express para manejar las operaciones CRUD de clientes.
@@ -89,26 +89,6 @@ clienteRouter.patch('/clientes/:id', async (req, res) => {
 });
 
 /**
- * Ruta DELETE para eliminar un cliente por ID
- * @returns Mensaje de éxito o error
- */
-clienteRouter.delete('/clientes/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const cliente = await eliminarCliente(id);
-
-    if (cliente) {
-      res.status(200).send({ mensaje: 'Cliente eliminado correctamente.' });
-    } else {
-      res.status(404).send({ mensaje: 'Cliente no encontrado.' });
-    }
-  } catch (error) {
-    res.status(500).send({ mensaje: 'Error al eliminar el cliente', error });
-  }
-});
-
-
-/**
  * Ruta PATCH para actualizar un cliente por nombre usando query
  * @returns El cliente actualizado o un mensaje de error
  */
@@ -171,5 +151,26 @@ clienteRouter.delete('/clientes', async (req, res) => {
     }
   } catch (error) {
     res.status(500).send({ mensaje: 'Error al eliminar el cliente.', error: error instanceof Error ? error.message : error });
+  }
+});
+
+
+
+/**
+ * Ruta DELETE para eliminar un cliente por ID
+ * @returns Mensaje de éxito o error
+ */
+clienteRouter.delete('/clientes/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const cliente = await eliminarCliente(id);
+
+    if (cliente) {
+      res.status(200).send({ mensaje: 'Cliente eliminado correctamente.' });
+    } else {
+      res.status(404).send({ mensaje: 'Cliente no encontrado.' });
+    }
+  } catch (error) {
+    res.status(500).send({ mensaje: 'Error al eliminar el cliente', error });
   }
 });
