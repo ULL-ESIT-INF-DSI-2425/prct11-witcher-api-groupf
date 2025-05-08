@@ -1,9 +1,8 @@
-import { connect } from 'mongoose';
+import { connect } from "mongoose";
 
-const connectionString = 'mongodb://127.0.0.1:27017/WitcherAPI_DB';
-
-connect(connectionString).then(() => {
-  console.log('===> Conexión establecida con MongoDB <===');
-}).catch((error) => {
-  console.error('### Error al conectar con MongoDB:', error);
-});
+try {
+  await connect(process.env.MONGODB_URL!);
+  console.log("Connection to MongoDB server established");
+} catch (error) {
+  console.log(error);
+}

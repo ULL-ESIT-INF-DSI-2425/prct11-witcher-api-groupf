@@ -1,5 +1,5 @@
 import { describe, test, beforeEach, expect } from "vitest";
-import app from '../src/index.js';
+import { app } from "../src/app.js";
 import request from "supertest";
 import { Cliente } from "../src/schemas/cliente.model.js";
 import { Bien } from "../src/schemas/bien.model.js";

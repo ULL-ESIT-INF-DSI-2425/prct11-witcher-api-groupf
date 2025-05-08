@@ -1,4 +1,4 @@
-import app from '../src/index.js';
+import { app } from "../src/app.js";
 import { describe, test, beforeEach, expect } from "vitest";
 import request from "supertest";
 import { Bien } from "../src/schemas/bien.model.js";
@@ -73,7 +73,8 @@ describe("API de Bienes", () => {
 
       expect(response.body.length).toBe(1);
       expect(response.body[0].nombre).toBe(testBien.nombre);
-    });
+    }
+);
 
     // test("debería filtrar por nombre", async () => {
     //   const response = await request(app)

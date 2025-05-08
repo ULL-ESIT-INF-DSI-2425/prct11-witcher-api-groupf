@@ -1,6 +1,6 @@
 
 import { describe, test, beforeEach, expect } from "vitest";
-import app from '../src/index.js';
+import { app } from "../src/app.js";
 import request from "supertest";
 import { Mercader } from "../src/schemas/mercader.model.js";
 import { Bien } from "../src/schemas/bien.model.js";
