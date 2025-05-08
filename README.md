@@ -39,7 +39,7 @@ npm run dev
 ## INTERGRACIÓN CONTÍNUA
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ULL-ESIT-INF-DSI-2425_prct11-witcher-api-groupf&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ULL-ESIT-INF-DSI-2425_prct11-witcher-api-groupf)
 
-
+[![CI Tests](https://github.com/ULL-ESIT-INF-DSI-2425/prct11-witcher-api-groupf/actions/workflows/ci.yml/badge.svg)](https://github.com/ULL-ESIT-INF-DSI-2425/prct11-witcher-api-groupf/actions/workflows/ci.yml)
 
 
 ## 📱 _Contactos_
