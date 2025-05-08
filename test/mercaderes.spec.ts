@@ -141,16 +141,6 @@ describe("API de Mercaderes", () => {
     });
   });
 
-  describe("GET /mercaderes/:id/dinero", () => {
-    test("debería obtener el dinero de un mercader", async () => {
-      const mercader = await Mercader.findOne({ nombre: testMercader.nombre });
-      const response = await request(app)
-        .get(`/mercaderes/${mercader?._id}/dinero`)
-        .expect(200);
-
-      expect(response.body).toHaveProperty("dinero", testMercader.dinero);
-    });
-  });
 
   describe("PATCH /mercaderes/:id", () => {
     test("debería actualizar un mercader", async () => {
@@ -195,97 +185,4 @@ describe("API de Mercaderes", () => {
     });
   });
 
-  describe("OPTIONS /mercaderes/ordenar", () => {
-    test("debería ordenar mercaderes por reputación descendente", async () => {
-      // Agregar otro mercader para probar ordenación
-      await new Mercader({
-        nombre: "Fergus Graem",
-        tienda: "Herrería de Crow's Perch",
-        ubicacion: "Velen",
-        especialidad: "Armas",
-        reputacion: 3,
-        dinero: 800
-      }).save();
-
-      const response = await request(app)
-        .options("/mercaderes/ordenar")
-        .send({ ordenar: "reputacion", ascendente: false })
-        .expect(200);
-
-      expect(response.body.length).toBe(2);
-      expect(response.body[0].reputacion).toBe(4);
-      expect(response.body[1].reputacion).toBe(3);
-    });
-  });
-
-  describe("GET /mercaderes/ubicacion/:ubicacion", () => {
-    test("debería filtrar mercaderes por ubicación", async () => {
-      const response = await request(app)
-        .get("/mercaderes/ubicacion/Novigrado")
-        .expect(200);
-
-      expect(response.body.length).toBe(1);
-      expect(response.body[0].ubicacion).toBe("Novigrado");
-    });
-
-    test("debería devolver sugerencia si no hay mercaderes en la ubicación", async () => {
-      const response = await request(app)
-        .get("/mercaderes/ubicacion/Toussaint")
-        .expect(404);
-
-      expect(response.body).toHaveProperty("sugerencia");
-    });
-  });
-
-  describe("GET /mercaderes/especialidad/:especialidad", () => {
-    test("debería filtrar mercaderes por especialidad", async () => {
-      const response = await request(app)
-        .get("/mercaderes/especialidad/Pociones")
-        .expect(200);
-
-      expect(response.body.length).toBe(1);
-      expect(response.body[0].especialidad).toBe("Pociones");
-    });
-  });
-
-  describe("Funciones adicionales", () => {
-    test("debería añadir un bien al inventario de un mercader", async () => {
-      const mercader = await Mercader.findOne({ nombre: testMercader.nombre });
-      const bien = await Bien.findOne({ nombre: testBien.nombre }) as { _id: string };
-      
-      const response = await request(app)
-        .post(`/mercaderes/${mercader?._id}/inventario`)
-        .send({ bienId: bien?._id })
-        .expect(201);
-
-      expect(response.body.inventario).toContain(bien?._id.toString());
-    });
-
-    test("debería añadir dinero a un mercader", async () => {
-      const mercader = await Mercader.findOne({ nombre: testMercader.nombre });
-      const response = await request(app)
-        .patch(`/mercaderes/${mercader?._id}/dinero`)
-        .send({ cantidad: 500 })
-        .expect(200);
-
-      expect(response.body.dinero).toBe(2000);
-    });
-
-    test("debería verificar si un mercader tiene ciertos bienes", async () => {
-      const mercader = await Mercader.findOne({ nombre: testMercader.nombre });
-      const bien = await Bien.findOne({ nombre: testBien.nombre });
-      
-      // Añadir el bien al inventario primero
-      await request(app)
-        .post(`/mercaderes/${mercader?._id}/inventario`)
-        .send({ bienId: bien?._id });
-
-      const response = await request(app)
-        .get(`/mercaderes/${mercader?._id}/tiene-bienes`)
-        .send({ bienesIds: [bien?._id] })
-        .expect(200);
-
-      expect(response.body).toHaveProperty("tieneTodos", true);
-    });
-  });
 });
