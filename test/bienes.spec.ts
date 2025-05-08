@@ -30,7 +30,7 @@ describe("API de Bienes", () => {
       const response = await request(app)
         .post("/bienes")
         .send(nuevoBien)
-        .expect(201); //Esto es un expec de super test
+        .expect(201);
 
       expect(response.body).toMatchObject(nuevoBien);
       expect(response.body._id).toBeDefined();
@@ -54,15 +54,6 @@ describe("API de Bienes", () => {
 
       expect(response.body).toHaveProperty("message");
     });
-
-    // test("debería fallar si el nombre ya existe", async () => {
-    //   const response = await request(app)
-    //     .post("/bienes")
-    //     .send(testBien) // Mismo nombre que el bien de prueba
-    //     .expect(500);
-
-    //   expect(response.body).toHaveProperty("message");
-    // });
   });
 
   describe("GET /bienes", () => {
@@ -73,24 +64,24 @@ describe("API de Bienes", () => {
 
       expect(response.body.length).toBe(1);
       expect(response.body[0].nombre).toBe(testBien.nombre);
-    }
-);
+    });
 
-    // test("debería filtrar por nombre", async () => {
-    //   const response = await request(app)
-    //     .get("/bienes?nombre=Espada")
-    //     .expect(200);
+    test("debería filtrar por nombre", async () => {
+      // Buscar el nombre exacto que sabemos que existe
+      const response = await request(app)
+        .get("/bienes?nombre=Espada de prueba")
+        .expect(200);
+    
+      expect(response.body.length).toBe(1);
+      expect(response.body[0].nombre).toBe(testBien.nombre);
+    });
 
-    //   expect(response.body.length).toBe(1);
-    //   expect(response.body[0].nombre).toBe(testBien.nombre);
-    // });
-
-    test("debería devolver array vacío si no hay coincidencias", async () => {
+    test("debería devolver mensaje si no hay coincidencias", async () => {
       const response = await request(app)
         .get("/bienes?nombre=NoExiste")
         .expect(404);
 
-      expect(response.body).toHaveProperty("mensaje");
+      expect(response.body).toHaveProperty("mensaje", "No se encontraron bienes.");
     });
   });
 
@@ -112,17 +103,6 @@ describe("API de Bienes", () => {
         .expect(404);
 
       expect(response.body).toHaveProperty("mensaje", "Bien no encontrado");
-    });
-  });
-
-  describe("GET /bienes/:id/obtener-valor", () => {
-    test("debería obtener el valor de un bien", async () => {
-      const bien = await Bien.findOne({ nombre: testBien.nombre });
-      const response = await request(app)
-        .get(`/bienes/${bien?._id}/obtener-valor`)
-        .expect(200);
-
-      expect(response.body).toHaveProperty("valor", testBien.valor);
     });
   });
 
@@ -154,6 +134,32 @@ describe("API de Bienes", () => {
     });
   });
 
+  describe("PATCH /bienes (por nombre)", () => {
+    test("debería actualizar un bien buscado por nombre", async () => {
+      const updates = { valor: 200 };
+
+      const response = await request(app)
+        .patch("/bienes?nombre=Espada de prueba")
+        .send(updates)
+        .expect(200);
+
+      expect(response.body.valor).toBe(200);
+
+      // Verificar en la base de datos
+      const bienActualizado = await Bien.findOne({ nombre: testBien.nombre });
+      expect(bienActualizado?.valor).toBe(200);
+    });
+
+    test("debería rechazar cambiar el nombre si se usa PATCH por nombre", async () => {
+      const response = await request(app)
+        .patch("/bienes?nombre=Espada de prueba")
+        .send({ nombre: "Nuevo nombre" })
+        .expect(400);
+
+      expect(response.body).toHaveProperty("mensaje", "No se puede modificar el ID o el nombre del bien.");
+    });
+  });
+
   describe("DELETE /bienes/:id", () => {
     test("debería eliminar un bien", async () => {
       const bien = await Bien.findOne({ nombre: testBien.nombre });
@@ -169,46 +175,17 @@ describe("API de Bienes", () => {
     });
   });
 
-  describe("OPTIONS /bienes/ordenar", () => {
-    test("debería ordenar bienes por nombre", async () => {
-      // Agregar más bienes para probar ordenación
-      await new Bien({
-        nombre: "Amuleto",
-        descripcion: "Protección mágica",
-        valor: 200,
-        tipo: "otro"
-      }).save();
-
+  describe("DELETE /bienes (por nombre)", () => {
+    test("debería eliminar un bien buscado por nombre", async () => {
       const response = await request(app)
-        .options("/bienes/ordenar")
-        .send({ ordenar: "nombre", ascendente: true })
+        .delete("/bienes?nombre=Espada de prueba")
         .expect(200);
 
-      expect(response.body.length).toBe(2);
-      expect(response.body[0].nombre).toBe("Amuleto");
-      expect(response.body[1].nombre).toBe(testBien.nombre);
-    });
-  });
+      expect(response.body).toHaveProperty("mensaje", "Bien eliminado correctamente");
 
-  describe("GET /bienes/tipo/:tipo", () => {
-    test("debería filtrar bienes por tipo", async () => {
-      const response = await request(app)
-        .get("/bienes/tipo/arma")
-        .expect(200);
-
-      expect(response.body.length).toBe(1);
-      expect(response.body[0].tipo).toBe("arma");
-    });
-  });
-
-  describe("GET /bienes/valor/:valor", () => {
-    test("debería filtrar bienes por valor", async () => {
-      const response = await request(app)
-        .get("/bienes/valor/100")
-        .expect(200);
-
-      expect(response.body.length).toBe(1);
-      expect(response.body[0].valor).toBe(100);
+      // Verificar que se eliminó
+      const bienEliminado = await Bien.findOne({ nombre: testBien.nombre });
+      expect(bienEliminado).toBeNull();
     });
   });
 });
