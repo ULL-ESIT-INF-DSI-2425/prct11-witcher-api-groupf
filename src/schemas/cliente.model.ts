@@ -1,12 +1,17 @@
 import { Document, Schema, model } from 'mongoose';
 
-// Interfaz para el tipado del par bien-cantidad
+/**
+ * Interfaz que representa la cantidad de un bien específico.
+ */
 export interface BienCantidad {
   bienId: string;
   cantidad: number;
 }
 
-// Interfaz para el tipado del cliente
+/**
+ * Interfaz que representa un documento de Cliente en la base de datos.
+ * Extiende la interfaz Document de Mongoose para incluir métodos específicos.
+ */
 export interface ClienteDocumentInterface extends Document {
   nombre: string;
   tipo: 'Cazador' | 'Brujo' | 'Noble' | 'Bandido' | 'Mercenario' | 'Aldeano';
@@ -19,7 +24,11 @@ export interface ClienteDocumentInterface extends Document {
 const validadorDinero = (value: number) => value >= 0;
 const validadorCantidad = (value: number) => value > 0;  // Validador para cantidad de bienes
 
-// Esquema para BienCantidad
+
+/**
+ * Esquema de Mongoose para la cantidad de un bien específico.
+ * Define la estructura y validaciones de los documentos de BienCantidad.
+ */
 const BienCantidadSchema = new Schema<BienCantidad>({
   bienId: {
     type: String,
@@ -35,7 +44,10 @@ const BienCantidadSchema = new Schema<BienCantidad>({
   }
 });
 
-// Esquema del Cliente
+/**
+ * Esquema de Mongoose para el modelo Cliente.
+ * Define la estructura, validaciones y configuraciones de los documentos Cliente.
+ */
 const ClienteSchema = new Schema<ClienteDocumentInterface>({
   nombre: {
     type: String,
@@ -70,5 +82,8 @@ const ClienteSchema = new Schema<ClienteDocumentInterface>({
   },
 });
 
-// Modelo
+/**
+ * Modelo de Mongoose para la colección de Clientes.
+ * Proporciona métodos para interactuar con la colección en la base de datos.
+ */
 export const Cliente = model<ClienteDocumentInterface>('Cliente', ClienteSchema);

@@ -1,6 +1,10 @@
 import { Document, Schema, model } from 'mongoose';
 import { BienCantidad } from './cliente.model.js';
 
+/**
+ * Interfaz que representa un documento de Mercader en la base de datos.
+ * Extiende la interfaz Document de Mongoose para incluir métodos específicos.
+ */
 export interface MercaderDocumentInterface extends Document {
   nombre: string;
   tienda: string;
@@ -8,10 +12,13 @@ export interface MercaderDocumentInterface extends Document {
   especialidad: string;
   reputacion: number;
   dinero: number;
-  inventario: BienCantidad[];  // Cambiado de string[] a BienCantidad[]
+  inventario: BienCantidad[];  
 }
 
-// Esquema para BienCantidad
+/**
+ * Esquema de Mongoose para el modelo BienCantidad.
+ * Define la estructura, validaciones y configuraciones de los documentos BienCantidad.
+ */
 const BienCantidadSchema = new Schema<BienCantidad>({
   bienId: {
     type: String,
@@ -24,6 +31,10 @@ const BienCantidadSchema = new Schema<BienCantidad>({
   }
 });
 
+/**
+ * Esquema de Mongoose para el modelo Mercader.
+ * Define la estructura, validaciones y configuraciones de los documentos Mercader.
+ */
 const MercaderSchema = new Schema<MercaderDocumentInterface>({
   nombre: {
     type: String,
@@ -67,4 +78,8 @@ const MercaderSchema = new Schema<MercaderDocumentInterface>({
   }
 });
 
+/**
+ * Modelo de Mongoose para la colección de Mercaderes.
+ * Proporciona métodos para interactuar con la colección en la base de datos.
+ */
 export const Mercader = model<MercaderDocumentInterface>('Mercader', MercaderSchema);

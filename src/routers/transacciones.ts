@@ -4,10 +4,15 @@ import { obtenerMercaderPorId , actualizarMercader, removeBienFromMercader} from
 import { obtenerClientePorId, actualizarCliente, addBienToCliente } from '../functions/cliente.functions.js';
 import { obtenerBienPorId } from '../functions/bien.functions.js';
 
-
-
+/**
+ * Router de Express para manejar las operaciones CRUD de transacciones.
+ */
 export const transaccionRouter = express.Router();
 
+/**
+ * Ruta POST para crear una nueva transacción
+ * @returns La transacción creada o un mensaje de error
+ */
 transaccionRouter.post('/transacciones', async (req, res) => {
   try {
     // Verifica que exista el mercader con el id
@@ -92,7 +97,10 @@ transaccionRouter.post('/transacciones', async (req, res) => {
 });
 
 
-// GET - Obtener transacciones (todos o por nombre)
+/**
+ * Ruta GET para obtener todas las transacciones
+ * @returns Lista de transacciones o un mensaje de error
+ */
 transaccionRouter.get('/transacciones', async (req, res) => {
   try {
 
@@ -108,7 +116,10 @@ transaccionRouter.get('/transacciones', async (req, res) => {
 });
 
 
-// GET - Obtener un transacciones por ID
+/**
+ * Ruta GET para obtener una transacción por ID
+ * @returns La transacción encontrada o un mensaje de error
+ */
 transaccionRouter.get('/transacciones/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -124,7 +135,10 @@ transaccionRouter.get('/transacciones/:id', async (req, res) => {
   }
 });
 
-//DELETE
+/**
+ * Ruta DELETE para eliminar una transacción por ID
+ * @returns Mensaje de éxito o error
+ */
 transaccionRouter.delete('/transacciones/:id', async (req, res) => {
   try {
     const { id } = req.params;

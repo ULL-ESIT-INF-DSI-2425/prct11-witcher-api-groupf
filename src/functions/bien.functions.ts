@@ -1,7 +1,9 @@
 import { Bien, BienDocumentInterface } from '../schemas/bien.model.js';
 
 /**
- * Crea un nuevo bien en la base de datos.
+ * Crea un nuevo bien en la base de datos
+ * @param data - Datos del bien a crear, debe coincidir con el tipo del modelo Bien
+ * @returns - Promesa que resuelve con el documento del bien creado
  */
 export async function crearBien(data: typeof Bien) {
   const bien = new Bien(data);
@@ -9,54 +11,73 @@ export async function crearBien(data: typeof Bien) {
 }
 
 /**
- * Obtiene todos los bienes o busca por nombre/descripción.
+ * Obtiene todos los bienes almacenados en la base de datos
+ * @returns - Promesa que resuelve con un array de todos los bienes
  */
 export async function obtenerBienes() {
   return await Bien.find();
 }
 
 /**
- * Obtiene un bien por su ID único.
+ * Obtiene un bien específico por su ID único
+ * @param id - ID del bien a buscar
+ * @returns Promesa que resuelve con el documento del bien encontrado o null si no existe
  */
 export async function obtenerBienPorId(id: string) {
   return await Bien.findById(id);
 }
 
 /**
- * Obtiene un bien por su nombre único.
+ * Busca bienes por su nombre (puede devolver múltiples resultados si hay nombres duplicados)
+ * @param nombre - Nombre del bien a buscar
+ * @returns Promesa que resuelve con un array de bienes que coinciden con el nombre
  */
 export async function obtenerBienPorNombre(nombre: string) {
   return await Bien.find({ nombre });
 }
 
 /**
- * Actualiza un bien por su ID único.
+ * Actualiza un bien existente identificado por su ID
+ * @param id - ID del bien a actualizar
+ * @param updates - Objeto con las propiedades a actualizar
+ * @returns Promesa que resuelve con el documento del bien actualizado o null si no se encontró
  */
 export async function actualizarBien(id: string, updates: BienDocumentInterface) {
   return await Bien.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
 }
 
 /**
- * Elimina un bien por su ID único.
+ * Elimina un bien de la base de datos por su ID
+ * @param id - ID del bien a eliminar
+ * @returns Promesa que resuelve con el documento eliminado o null si no se encontró
  */
 export async function eliminarBien(id: string) {
   return await Bien.findByIdAndDelete(id);
 }
 
-
 /**
- * Obtiene bienes por su tipo
+ * Obtiene todos los bienes de un tipo específico
+ * @param tipo - Tipo de bien a buscar (arma, armadura, pocion, herramienta, otro)
+ * @returns Promesa que resuelve con un array de bienes del tipo especificado
  */
 export async function obtenerBienesPorTipo(tipo: string) {
   return await Bien.find({ tipo });
 }
 
-// encontrar bienes por valor
+/**
+ * Busca bienes por su valor exacto
+ * @param valor - Valor numérico a buscar
+ * @returns Promesa que resuelve con un array de bienes con el valor especificado
+ */
 export async function obtenerBienesPorValor(valor: number) {
   return await Bien.find({ valor });
 }
 
-// optener el id de un bien por su nombre
+/**
+ * Obtiene el ID de un bien buscando por su nombre
+ * @param nombre - Nombre del bien a buscar
+ * @returns Promesa que resuelve con el ID del bien encontrado o null si no existe
+ */
 export async function obtenerIdBienPorNombre(nombre: string) {
   const bien = await Bien.findOne({ nombre });
   return bien ? bien._id : null;

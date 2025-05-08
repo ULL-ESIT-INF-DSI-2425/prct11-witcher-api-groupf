@@ -1,9 +1,10 @@
 import { Cliente, ClienteDocumentInterface } from '../schemas/cliente.model.js';
 import { Bien } from '../schemas/bien.model.js';  
 
-
 /**
- * Crea un nuevo cliente en la base de datos.
+ * Crea un nuevo cliente en la base de datos
+ * @param data - Datos del cliente a crear, debe coincidir con el tipo del modelo Cliente
+ * @returns - Promesa que resuelve con el documento del cliente creado
  */
 export async function crearCliente(data: typeof Cliente) {
     const cliente = new Cliente(data);
@@ -11,44 +12,56 @@ export async function crearCliente(data: typeof Cliente) {
 }
 
 /**
- * Obtiene clientes. todos los clientes
+ * Obtiene todos los clientes almacenados en la base de datos
+ * @returns - Promesa que resuelve con un array de todos los clientes
  */
 export async function obtenerClientes() {
     return await Cliente.find();
 }
 
 /**
- * Obtiene un cliente por su ID.
+ * Obtiene un cliente específico por su ID único
+ * @param id - ID del cliente a buscar
+ * @returns Promesa que resuelve con el documento del cliente encontrado o null si no existe
  */
 export async function obtenerClientePorId(id: string) {
   return await Cliente.findById(id);
 }
 
 /**
- * Obtiene un cliente por su nombre.
+ * Busca clientes por su nombre (puede devolver múltiples resultados si hay nombres duplicados)
+ * @param nombre - Nombre del cliente a buscar
+ * @returns Promesa que resuelve con un array de clientes que coinciden con el nombre
  */
 export async function obtenerClientePorNombre(nombre: string) {
   return await Cliente.find({ nombre });
 }
 
 /**
- * Actualiza un cliente por su ID.
+ * Actualiza un cliente existente identificado por su ID
+ * @param id - ID del cliente a actualizar
+ * @param updates - Objeto con las propiedades a actualizar
+ * @returns Promesa que resuelve con el documento del cliente actualizado o null si no se encontró
  */
 export async function actualizarCliente(id: string, updates: ClienteDocumentInterface) {
   return await Cliente.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
 }
 
 /**
- * Elimina un cliente por su ID.
+ * Elimina un cliente de la base de datos por su ID
+ * @param id - ID del cliente a eliminar
+ * @returns Promesa que resuelve con el documento eliminado o null si no se encontró
  */
 export async function eliminarCliente(id: string) {
   return await Cliente.findByIdAndDelete(id);
 }
 
-
 /**
- * Añade o actualiza un bien en un cliente (recibe clienteId y objeto BienCantidad).
- * Si el bien ya existe, suma la cantidad. Si no existe, lo añade.
+ * Añade un bien a un cliente (recibe clienteId y bienId).
+ * @param clienteId - ID del cliente
+ * @param bienId - ID del bien
+ * @param cantidad - Cantidad a añadir
+ * @returns - El cliente actualizado
  */
 export async function addBienToCliente(clienteId: string, { bienId, cantidad }: { bienId: string, cantidad: number }) {
   // Verifica que existan ambos
@@ -75,7 +88,11 @@ export async function addBienToCliente(clienteId: string, { bienId, cantidad }: 
 
 
 /**
-  * Elimina un bien de un cliente (recibe clienteId y bienId).
+ * Elimina un bien de un cliente (recibe clienteId y bienId).
+ * @param clienteId - ID del cliente
+ * @param bienId - ID del bien
+ * @param cantidad - Cantidad a eliminar (opcional)
+ * @returns - El cliente actualizado
  */
 export async function removeBienFromCliente(
   clienteId: string, 
@@ -111,8 +128,12 @@ export async function removeBienFromCliente(
   return cliente;
 }
 
-
-// funcion para quietarle dinero al cliente por su id
+/**
+ * Añade dinero a un cliente
+ * @param clienteId - ID del cliente
+ * @param dinero - Cantidad de dinero a añadir
+ * @returns - El cliente actualizado
+ */
 export async function quitarDineroCliente(clienteId: string, dinero: number) {
   const cliente = await Cliente.findById(clienteId);
   if (!cliente) throw new Error('Cliente no encontrado');
@@ -122,14 +143,19 @@ export async function quitarDineroCliente(clienteId: string, dinero: number) {
 }
 
 /**
- * Obtiene clientes por su tipo
+ * Añade dinero a un cliente
+ * @param clienteId - ID del cliente
+ * @param dinero - Cantidad de dinero a añadir
+ * @returns - El cliente actualizado
  */
 export async function obtenerClientesPorTipo(tipo: string) {
   return await Cliente.find({ tipo });
 }
 
 /**
- * Obtiene clientes por cantidad de dinero
+ * Busca clientes por la cantidad de dinero que tienen
+ * @param dinero - Cantidad de dinero a buscar
+ * @returns Promesa que resuelve con un array de clientes que tienen esa cantidad de dinero
  */
 export async function obtenerClientesPorDinero(dinero: number) {
   return await Cliente.find({ dinero });

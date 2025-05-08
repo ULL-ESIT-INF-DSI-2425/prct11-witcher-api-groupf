@@ -1,10 +1,16 @@
 import express from 'express';
 import { crearBien, obtenerBienes, obtenerBienPorId, actualizarBien, eliminarBien, obtenerBienPorNombre, obtenerBienesPorTipo, obtenerBienesPorValor} from '../functions/bien.functions.js';
-import { BienDocumentInterface } from '../schemas/bien.model.js';
 
+/**
+ * Router de Express para manejar las operaciones CRUD de bienes.
+ */
 export const bienesRouter = express.Router();
 
-// POST - Crear un nuevo bien
+
+/**
+ * Ruta POST para crear un nuevo bien
+ * @returns El bien creado o un mensaje de error
+ */
 bienesRouter.post('/bienes', async (req, res) => {
   try {
     const bien = await crearBien(req.body);
@@ -14,8 +20,10 @@ bienesRouter.post('/bienes', async (req, res) => {
   }
 });
 
-
-// GET - Obtener bienes (todos o por filtros)
+/**
+ * Ruta GET para obtener bienes
+ * @returns Lista de bienes o un mensaje de error
+ */
 bienesRouter.get('/bienes', async (req, res) => {
   try {
     const nombre = req.query.nombre?.toString();
@@ -34,8 +42,10 @@ bienesRouter.get('/bienes', async (req, res) => {
   }
 });
 
-
-// GET - Obtener el valor de un bien por ID
+/**
+ * Ruta GET para obtener el valor de un bien por ID
+ * @returns El valor del bien o un mensaje de error
+ */
 bienesRouter.get('/bienes/:id/obtener-valor', async (req, res) => {
   try {
     const { id } = req.params;
@@ -54,8 +64,10 @@ bienesRouter.get('/bienes/:id/obtener-valor', async (req, res) => {
   }
 });
 
-
-// GET - Obtener un bien por ID
+/**
+ * Ruta GET para obtener un bien por ID
+ * @returns El bien encontrado o un mensaje de error
+ */
 bienesRouter.get('/bienes/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -70,9 +82,10 @@ bienesRouter.get('/bienes/:id', async (req, res) => {
   }
 });
 
-
-
-// PATCH - Actualizar un bien por ID
+/**
+ * Ruta PATCH para actualizar un bien por ID
+ * @returns El bien actualizado o un mensaje de error
+ */
 bienesRouter.patch('/bienes/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -94,8 +107,10 @@ bienesRouter.patch('/bienes/:id', async (req, res) => {
   }
 });
 
-
-// DELETE - Eliminar un bien por ID
+/**
+ * Ruta DELETE para eliminar un bien por ID
+ * @returns Mensaje de éxito o error
+ */
 bienesRouter.delete('/bienes/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -110,8 +125,10 @@ bienesRouter.delete('/bienes/:id', async (req, res) => {
   }
 });
 
-
-// PATCH - Actualizar un bien por nombre
+/**
+ * Ruta PATCH para actualizar un bien por nombre
+ * @returns El bien actualizado o un mensaje de error
+ */
 bienesRouter.patch('/bienes/nombre/:nombre', async (req, res) => {
   try {
     const { nombre } = req.params;
@@ -146,40 +163,10 @@ bienesRouter.patch('/bienes/nombre/:nombre', async (req, res) => {
   }
 });
 
-// OPTIONS - Ordenar bienes
-bienesRouter.options('/bienes/ordenar', async (req, res) => {
-  try {
-    const { ordenar, ascendente } = req.body;
-
-    // Validar que "ordenar" sea una clave válida de BienDocumentInterface
-    const camposValidos: (keyof BienDocumentInterface)[] = ['nombre', 'descripcion', 'valor', 'tipo'];
-    if (!ordenar || !camposValidos.includes(ordenar)) {
-      res.status(400).send({ mensaje: `El campo "${ordenar}" no es válido para ordenar.` });
-      return;
-    }
-
-    const bienes = await obtenerBienes();
-
-    if (bienes.length === 0) {
-      res.status(404).send({ mensaje: 'No se encontraron bienes.' });
-      return;
-    }
-
-    // Ordenar los bienes
-    const bienesOrdenados = bienes.sort((a, b) => {
-      const valorA = a[ordenar as keyof BienDocumentInterface]?.toString().toLowerCase() || '';
-      const valorB = b[ordenar as keyof BienDocumentInterface]?.toString().toLowerCase() || '';
-      return ascendente ? valorA.localeCompare(valorB) : valorB.localeCompare(valorA);
-    });
-
-    res.status(200).send(bienesOrdenados);
-  } catch (error) {
-    res.status(500).send({ mensaje: 'Error al ordenar los bienes.', error });
-  }
-});
-
-
-// GET - Obtener bienes por tipo
+/**
+ * Ruta GET para obtener bienes por tipo
+ * @returns Lista de bienes del tipo especificado o un mensaje de error
+ */
 bienesRouter.get('/bienes/tipo/:tipo', async (req, res) => {
   try {
     const { tipo } = req.params;
@@ -201,7 +188,10 @@ bienesRouter.get('/bienes/tipo/:tipo', async (req, res) => {
   }
 });
 
-// GET - Obtener bienes por valor
+/**
+ * Ruta GET para obtener bienes por valor
+ * @returns Lista de bienes con el valor especificado o un mensaje de error
+ */
 bienesRouter.get('/bienes/valor/:valor', async (req, res) => {
   try {
     const { valor } = req.params;

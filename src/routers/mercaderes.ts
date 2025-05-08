@@ -1,10 +1,15 @@
 import express from 'express';
 import { crearMercader, obtenerMercaderPorNombre, obtenerMercaderes , obtenerMercaderPorId, eliminarMercader, actualizarMercader, obtenerMercaderesPorEspecialidad, obtenerMercaderesPorUbicacion} from '../functions/mercader.functions.js';
 
-
+/**
+ * Router de Express para manejar las operaciones CRUD de mercaderes.
+ */
 export const mercaderRouter = express.Router();
 
-// POST - Crear nuevo mercader
+/**
+ * Ruta POST para crear un nuevo mercader
+ * @returns El mercader creado o un mensaje de error
+ */
 mercaderRouter.post('/mercaderes', async (req, res) => {
   try {
     const mercader = await crearMercader(req.body);
@@ -15,7 +20,10 @@ mercaderRouter.post('/mercaderes', async (req, res) => {
 });
 
 
-// GET - Obtener mercaderes (todos o por nombre)
+/**
+ * Ruta GET para obtener mercaderes
+ * @returns Lista de mercaderes o un mensaje de error
+ */
 mercaderRouter.get('/mercaderes', async (req, res) => {
   try {
     const nombre = req.query.nombre?.toString();
@@ -35,7 +43,10 @@ mercaderRouter.get('/mercaderes', async (req, res) => {
 });
 
 
-// GET - Obtener un mercader por ID
+/**
+ * Ruta GET para obtener un mercader por ID
+ * @returns El mercader encontrado o un mensaje de error
+ */
 mercaderRouter.get('/mercaderes/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -51,8 +62,10 @@ mercaderRouter.get('/mercaderes/:id', async (req, res) => {
   }
 });
 
-
-// GET - Obtener el dinero de un mercader por ID
+/**
+ * Ruta GET para obtener el dinero de un mercader por ID
+ * @returns El dinero del mercader o un mensaje de error
+ */
 mercaderRouter.get('/mercaderes/:id/dinero', async (req, res) => {
   try {
     const { id } = req.params;
@@ -71,8 +84,10 @@ mercaderRouter.get('/mercaderes/:id/dinero', async (req, res) => {
   }
 });
 
-
-// PATCH - Actualizar un mercader por ID
+/**
+ * Ruta PATCH para actualizar un mercader por ID
+ * @returns El mercader actualizado o un mensaje de error
+ */
 mercaderRouter.patch('/mercaderes/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -96,7 +111,10 @@ mercaderRouter.patch('/mercaderes/:id', async (req, res) => {
 });
 
 
-// DELETE - Eliminar un mercader por ID
+/**
+ * Ruta DELETE para eliminar un mercader por ID
+ * @returns Mensaje de éxito o error
+ */
 mercaderRouter.delete('/mercaderes/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -113,7 +131,10 @@ mercaderRouter.delete('/mercaderes/:id', async (req, res) => {
 });
 
 
-// PATCH - Actualizar un mercader por nombre
+/**
+ * Ruta PATCH para actualizar un mercader por nombre
+ * @returns El mercader actualizado o un mensaje de error
+ */
 mercaderRouter.patch('/mercaderes/nombre/:nombre', async (req, res) => {
   try {
     const { nombre } = req.params;
@@ -147,7 +168,10 @@ mercaderRouter.patch('/mercaderes/nombre/:nombre', async (req, res) => {
   }
 });
 
-// GET - Obtener mercaderes por ubicación
+/**
+ * Ruta GET para obtener mercaderes por ubicación
+ * @returns Lista de mercaderes de la ubicación especificada o un mensaje de error
+ */
 mercaderRouter.get('/mercaderes/ubicacion/:ubicacion', async (req, res) => {
   try {
     const { ubicacion } = req.params;
@@ -169,7 +193,11 @@ mercaderRouter.get('/mercaderes/ubicacion/:ubicacion', async (req, res) => {
   }
 });
 
-// GET - Obtener mercaderes por especialidad
+
+/**
+ * Ruta GET para obtener mercaderes por especialidad
+ * @returns Lista de mercaderes de la especialidad especificada o un mensaje de error
+ */
 mercaderRouter.get('/mercaderes/especialidad/:especialidad', async (req, res) => {
   try {
     const { especialidad } = req.params;

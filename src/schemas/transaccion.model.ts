@@ -1,14 +1,21 @@
 import { Schema, model, Document } from 'mongoose';
 import { BienCantidad } from './cliente.model.js';
 
+/**
+ * Interfaz que representa un documento de Transacción en la base de datos.
+ * Extiende la interfaz Document de Mongoose para incluir métodos específicos.
+ */
 export interface TransaccionDocumentInterface extends Document {
   fecha: Date;
   clienteId: string;
   mercaderId: string;
-  bienes: BienCantidad[];  // Cambiado de string[] a BienTransaccion[]
+  bienes: BienCantidad[];  
 }
 
-// Esquema para BienTransaccion
+/**
+ * Esquema de Mongoose para el modelo Transacción.
+ * Define la estructura, validaciones y configuraciones de los documentos Transacción.
+ */
 const BienTransaccionSchema = new Schema<BienCantidad>({
   bienId: {
     type: String,
@@ -21,6 +28,10 @@ const BienTransaccionSchema = new Schema<BienCantidad>({
   }
 });
 
+/**
+ * Esquema de Mongoose para el modelo Transacción.
+ * Define la estructura, validaciones y configuraciones de los documentos Transacción.
+ */
 const TransaccionSchema = new Schema<TransaccionDocumentInterface>({
   fecha: {
     type: Date,
@@ -40,4 +51,8 @@ const TransaccionSchema = new Schema<TransaccionDocumentInterface>({
   }
 });
 
+/**
+ * Modelo de Mongoose para la colección de Transacciones.
+ * Proporciona métodos para interactuar con la colección en la base de datos.
+ */
 export const Transaccion = model<TransaccionDocumentInterface>('Transaccion', TransaccionSchema);

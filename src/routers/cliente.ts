@@ -1,10 +1,15 @@
 import express from 'express';
 import { crearCliente, obtenerClientePorNombre, obtenerClientes , obtenerClientePorId, eliminarCliente, actualizarCliente, obtenerClientesPorDinero, obtenerClientesPorTipo} from '../functions/cliente.functions.js';
 
-
+/**
+ * Router de Express para manejar las operaciones CRUD de clientes.
+ */
 export const clienteRouter = express.Router();
 
-// POST - Crear nuevo cliente
+/**
+ * Ruta POST para crear un nuevo cliente
+ * @returns El cliente creado o un mensaje de error
+ */
 clienteRouter.post('/clientes', async (req, res) => {
   try {
     const cliente = await crearCliente(req.body);
@@ -14,8 +19,10 @@ clienteRouter.post('/clientes', async (req, res) => {
   }
 });
 
-
-// GET - Obtener clientes (todos o por nombre)
+/**
+ * Ruta GET para obtener clientes
+ * @returns Lista de clientes o un mensaje de error
+ */
 clienteRouter.get('/clientes', async (req, res) => {
   try {
     const nombre = req.query.nombre?.toString();
@@ -35,7 +42,10 @@ clienteRouter.get('/clientes', async (req, res) => {
 });
 
 
-// GET - Obtener el dinero de un cliente por ID
+/**
+ * Ruta GET para obtener el dinero de un cliente por ID
+ * @returns El dinero del cliente o un mensaje de error
+ */
 clienteRouter.get('/clientes/:id/dinero', async (req, res) => {
   try {
     const { id } = req.params;
@@ -55,8 +65,10 @@ clienteRouter.get('/clientes/:id/dinero', async (req, res) => {
   }
 });
 
-
-// GET - Obtener un cliente por ID
+/**
+ * Ruta GET para obtener un cliente por ID
+ * @returns El cliente o un mensaje de error
+ */
 clienteRouter.get('/clientes/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -72,7 +84,10 @@ clienteRouter.get('/clientes/:id', async (req, res) => {
   }
 });
 
-// PATCH - Actualizar un cliente por ID
+/**
+ * Ruta PATCH para actualizar un cliente por ID
+ * @returns El cliente actualizado o un mensaje de error
+ */
 clienteRouter.patch('/clientes/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -95,7 +110,10 @@ clienteRouter.patch('/clientes/:id', async (req, res) => {
   }
 });
 
-// DELETE - Eliminar un cliente por ID
+/**
+ * Ruta DELETE para eliminar un cliente por ID
+ * @returns Mensaje de éxito o error
+ */
 clienteRouter.delete('/clientes/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -111,7 +129,10 @@ clienteRouter.delete('/clientes/:id', async (req, res) => {
   }
 });
 
-// PATCH - Actualizar un cliente por nombre
+/**
+ * Ruta PATCH para actualizar un cliente por nombre
+ * @returns El cliente actualizado o un mensaje de error
+ */
 clienteRouter.patch('/clientes/nombre/:nombre', async (req, res) => {
   try {
     const { nombre } = req.params;
@@ -145,7 +166,10 @@ clienteRouter.patch('/clientes/nombre/:nombre', async (req, res) => {
   }
 });
 
-// GET - Obtener clientes por tipo
+/**
+ * Ruta GET para obtener clientes por tipo
+ * @returns Lista de clientes del tipo especificado o un mensaje de error
+ */
 clienteRouter.get('/clientes/tipo/:tipo', async (req, res) => {
   try {
     const { tipo } = req.params;
@@ -167,7 +191,10 @@ clienteRouter.get('/clientes/tipo/:tipo', async (req, res) => {
   }
 });
 
-// GET - Obtener clientes por dinero exacto
+/**
+ * Ruta GET para obtener clientes por dinero
+ * @returns Lista de clientes con una cantidad exacta de dinero o un mensaje de error
+ */
 clienteRouter.get('/clientes/dinero/:dinero', async (req, res) => {
   try {
     const { dinero } = req.params;
