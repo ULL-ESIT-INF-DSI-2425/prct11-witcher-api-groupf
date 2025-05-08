@@ -56,24 +56,6 @@ export async function eliminarBien(id: string) {
 }
 
 /**
- * Obtiene todos los bienes de un tipo específico
- * @param tipo - Tipo de bien a buscar (arma, armadura, pocion, herramienta, otro)
- * @returns Promesa que resuelve con un array de bienes del tipo especificado
- */
-export async function obtenerBienesPorTipo(tipo: string) {
-  return await Bien.find({ tipo });
-}
-
-/**
- * Busca bienes por su valor exacto
- * @param valor - Valor numérico a buscar
- * @returns Promesa que resuelve con un array de bienes con el valor especificado
- */
-export async function obtenerBienesPorValor(valor: number) {
-  return await Bien.find({ valor });
-}
-
-/**
  * Obtiene el ID de un bien buscando por su nombre
  * @param nombre - Nombre del bien a buscar
  * @returns Promesa que resuelve con el ID del bien encontrado o null si no existe

@@ -142,21 +142,3 @@ export async function quitarDineroCliente(clienteId: string, dinero: number) {
   return cliente;
 }
 
-/**
- * Añade dinero a un cliente
- * @param clienteId - ID del cliente
- * @param dinero - Cantidad de dinero a añadir
- * @returns - El cliente actualizado
- */
-export async function obtenerClientesPorTipo(tipo: string) {
-  return await Cliente.find({ tipo });
-}
-
-/**
- * Busca clientes por la cantidad de dinero que tienen
- * @param dinero - Cantidad de dinero a buscar
- * @returns Promesa que resuelve con un array de clientes que tienen esa cantidad de dinero
- */
-export async function obtenerClientesPorDinero(dinero: number) {
-  return await Cliente.find({ dinero });
-}
