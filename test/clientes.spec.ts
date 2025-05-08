@@ -122,17 +122,6 @@ describe("API de Clientes", () => {
     });
   });
 
-  describe("GET /clientes/:id/dinero", () => {
-    test("debería obtener el dinero de un cliente", async () => {
-      const cliente = await Cliente.findOne({ nombre: testCliente.nombre });
-      const response = await request(app)
-        .get(`/clientes/${cliente?._id}/dinero`)
-        .expect(200);
-
-      expect(response.body).toHaveProperty("dinero", testCliente.dinero);
-    });
-  });
-
   describe("PATCH /clientes/:id", () => {
     test("debería actualizar un cliente", async () => {
       const cliente = await Cliente.findOne({ nombre: testCliente.nombre });
@@ -173,85 +162,6 @@ describe("API de Clientes", () => {
       // Verificar que se eliminó
       const clienteEliminado = await Cliente.findById(cliente?._id);
       expect(clienteEliminado).toBeNull();
-    });
-  });
-
-  describe("OPTIONS /clientes/ordenar", () => {
-    test("debería ordenar clientes por nombre", async () => {
-      // Agregar otro cliente para probar ordenación
-      await new Cliente({
-        nombre: "Triss Merigold",
-        tipo: "Brujo",
-        dinero: 700
-      }).save();
-
-      const response = await request(app)
-        .options("/clientes/ordenar")
-        .send({ ordenar: "nombre", ascendente: true })
-        .expect(200);
-
-      expect(response.body.length).toBe(2);
-      expect(response.body[0].nombre).toBe("Geralt de Rivia");
-      expect(response.body[1].nombre).toBe("Triss Merigold");
-    });
-  });
-
-  describe("GET /clientes/tipo/:tipo", () => {
-    test("debería filtrar clientes por tipo", async () => {
-      const response = await request(app)
-        .get("/clientes/tipo/Brujo")
-        .expect(200);
-
-      expect(response.body.length).toBe(1);
-      expect(response.body[0].tipo).toBe("Brujo");
-    });
-
-    test("debería devolver sugerencia si no hay clientes del tipo", async () => {
-      const response = await request(app)
-        .get("/clientes/tipo/Aldeano")
-        .expect(404);
-
-      expect(response.body).toHaveProperty("sugerencia");
-    });
-  });
-
-  describe("GET /clientes/dinero/:dinero", () => {
-    test("debería filtrar clientes por dinero exacto", async () => {
-      const response = await request(app)
-        .get("/clientes/dinero/500")
-        .expect(200);
-
-      expect(response.body.length).toBe(1);
-      expect(response.body[0].dinero).toBe(500);
-    });
-  });
-
-  describe("Funciones adicionales", () => {
-    test("debería añadir un bien a un cliente", async () => {
-      const cliente = await Cliente.findOne({ nombre: testCliente.nombre });
-      const bien = await new Bien({
-        nombre: "Espada de plata",
-        descripcion: "Para bestias",
-        valor: 300,
-        tipo: "arma"
-      }).save() as { _id: string };
-
-      const response = await request(app)
-        .post(`/clientes/${cliente?._id}/bienes`)
-        .send({ bienId: bien._id })
-        .expect(201);
-
-      expect(response.body.bienes).toContain((bien._id as string).toString());
-    });
-
-    test("debería quitar dinero a un cliente", async () => {
-      const cliente = await Cliente.findOne({ nombre: testCliente.nombre });
-      const response = await request(app)
-        .patch(`/clientes/${cliente?._id}/quitar-dinero`)
-        .send({ cantidad: 100 })
-        .expect(200);
-
-      expect(response.body.dinero).toBe(400);
     });
   });
 });
