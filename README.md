@@ -31,7 +31,7 @@ tsc
 ```
 #### Ejecución
 ```Bash
-npm run app
+npm run dev
 ```
 
 ➡️ Después de ejecutar, podrás usarlo con las extensiones MongoDB y Postman en VisualStudio.
