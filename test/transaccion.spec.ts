@@ -1,11 +1,10 @@
-import { describe, test, beforeEach, expect, beforeAll, afterAll } from "vitest";
+import { describe, test, beforeEach, expect } from "vitest";
 import request from "supertest";
 import { app } from "../src/app.js";
-import { Transaccion } from "../src/schemas/transaccion.model.js";
 import { Mercader } from "../src/schemas/mercader.model.js";
 import { Cliente } from "../src/schemas/cliente.model.js";
 import { Bien } from "../src/schemas/bien.model.js";
-import { b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
+
 
 let bienId: string;
 let mercaderId: string;
