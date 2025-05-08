@@ -42,28 +42,6 @@ clienteRouter.get('/clientes', async (req, res) => {
 });
 
 
-/**
- * Ruta GET para obtener el dinero de un cliente por ID
- * @returns El dinero del cliente o un mensaje de error
- */
-clienteRouter.get('/clientes/:id/dinero', async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // Obtener el cliente por ID
-    const cliente = await obtenerClientePorId(id);
-    if (!cliente) {
-      res.status(404).send({ mensaje: 'Cliente no encontrado.' });
-      return;
-    }
-
-    // Enviar el dinero del cliente
-    res.status(200).send({ dinero: cliente.dinero });
-  }
-  catch (error) {
-    res.status(500).send({ mensaje: 'Error al obtener el dinero del cliente', error });
-  }
-});
 
 /**
  * Ruta GET para obtener un cliente por ID
@@ -129,40 +107,42 @@ clienteRouter.delete('/clientes/:id', async (req, res) => {
   }
 });
 
+
 /**
- * Ruta PATCH para actualizar un cliente por nombre
+ * Ruta PATCH para actualizar un cliente por nombre usando query
  * @returns El cliente actualizado o un mensaje de error
  */
-clienteRouter.patch('/clientes/nombre/:nombre', async (req, res) => {
+clienteRouter.patch('/clientes', async (req, res) => {
   try {
-    const { nombre } = req.params;
+    const nombre = req.query.nombre?.toString();
     const updates = req.body;
 
-    if(updates._id || updates.nombre) {
-      res.status(400).send({ 
-        mensaje: 'No se puede modificar el ID del cliente.' });
+    if (!nombre) {
+      res.status(400).send({ mensaje: 'Se requiere el nombre del cliente como query (?nombre=...)' });
       return;
     }
 
-    // Primero encontrar el cliente por nombre
-    const cliente = await obtenerClientePorNombre(nombre);
-    if (!cliente) {
+    if (updates._id || updates.nombre) {
+      res.status(400).send({ mensaje: 'No se puede modificar el ID o el nombre del cliente.' });
+      return;
+    }
+
+    // Buscar el cliente por nombre
+    const clientes = await obtenerClientePorNombre(nombre);
+    if (clientes.length === 0) {
       res.status(404).send({ mensaje: 'Cliente no encontrado.' });
       return;
     }
 
-    const clienteActualizado = await actualizarCliente(cliente[0]._id as string, updates);
+    const clienteActualizado = await actualizarCliente(clientes[0]._id as string, updates);
 
-    if(clienteActualizado) {
+    if (clienteActualizado) {
       res.status(200).send(clienteActualizado);
     } else {
-      res.status(404).send({ mensaje: 'Cliente no encontrado.' });
+      res.status(404).send({ mensaje: 'Error al actualizar el cliente.' });
     }
   } catch (error) {
-    res.status(500).send({ 
-      mensaje: 'Error al actualizar el cliente', 
-      error: error instanceof Error ? error.message : error
-    });
+    res.status(500).send({ mensaje: 'Error al actualizar el cliente.', error });
   }
 });
 
