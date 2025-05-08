@@ -36,6 +36,9 @@ npm run dev
 
 ➡️ Después de ejecutar, podrás usarlo con las extensiones MongoDB y Postman en VisualStudio.
 
+## INTERGRACIÓN CONTÍNUA
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ULL-ESIT-INF-DSI-2425_prct11-witcher-api-groupf&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ULL-ESIT-INF-DSI-2425_prct11-witcher-api-groupf)
+
 
 
 
