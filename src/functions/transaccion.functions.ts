@@ -21,7 +21,7 @@ export async function obtenerTransaccion() {
 
 /**
  * Busca transacciones por el ID del cliente
- * @param clienteId - ID del cliente a buscar
+ * @param id - ID del cliente a buscar
  * @returns - Promesa que resuelve con un array de transacciones que coinciden con el clienteId
  */
 export async function obtenerTransaccionPorId(id: string) {

@@ -59,8 +59,6 @@ export async function eliminarCliente(id: string) {
 /**
  * Añade un bien a un cliente (recibe clienteId y bienId).
  * @param clienteId - ID del cliente
- * @param bienId - ID del bien
- * @param cantidad - Cantidad a añadir
  * @returns - El cliente actualizado
  */
 export async function addBienToCliente(clienteId: string, { bienId, cantidad }: { bienId: string, cantidad: number }) {

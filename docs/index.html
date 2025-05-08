@@ -1,0 +1,79 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="."><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>notes-rest-api</title><meta name="description" content="Documentation for notes-rest-api"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><div class="table-cell" id="tsd-search"><div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div><div class="field"><div id="tsd-toolbar-links"></div></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">notes-rest-api</a></div><div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>notes-rest-api</h1></div><div class="tsd-panel tsd-typography"><a id="dsi-práctica-12-api-rest-con-nodeexpress-para-gestionar-la-posada-del-lobo-blanco" class="tsd-anchor"></a><h1 class="tsd-anchor-link">[DSI] Práctica 12: API REST con Node/Express para gestionar La Posada del Lobo Blanco<a href="#dsi-práctica-12-api-rest-con-nodeexpress-para-gestionar-la-posada-del-lobo-blanco" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1><a id="página-web-documentación" class="tsd-anchor"></a><h2 class="tsd-anchor-link">PÁGINA: <a href="https://ull-esit-inf-dsi-2425.github.io/prct07-witcher-datamodel-groupf/">WEB DOCUMENTACIÓN</a><a href="#página-web-documentación" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
+<li>Universidad de La Laguna</li>
+<li>Grado en Ingeniería Informática</li>
+<li>Curso: Tercero de Ingeniería Informática</li>
+<li>Itinerario 5: Tecnologías de la Información</li>
+<li>Asignatura: Desarrollo de sistemas informáticos</li>
+<li>Curso: 2024 / 2025</li>
+<li>Autores: Saray García Campos, Adrián León Díaz, Víctor Rodríguez Dorta</li>
+</ul>
+<p>➡️ En este repositorio desarollaremos el informe y los ejercicios de la Práctica 11, llamada &quot;API REST con Node/Express para gestionar La Posada del Lobo Blanco&quot; de la asignatura &quot;Desarrollo de sistemas informáticos&quot;.</p>
+<a id="compilacion" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Compilacion<a href="#compilacion" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><a id="iniciación-de-mongodb" class="tsd-anchor"></a><h3 class="tsd-anchor-link">Iniciación de MongoDB<a href="#iniciación-de-mongodb" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Instala Mongo en tu dispositivo
+➡️ Ejecuta en tu local  (no en el repo)</p>
+<pre><code class="Bash"><span class="hl-0">sudo</span><span class="hl-1"> </span><span class="hl-2">/home/usuario/mongodb/bin/mongod</span><span class="hl-1"> </span><span class="hl-3">--dbpath</span><span class="hl-1"> </span><span class="hl-2">/home/usuario/mongodb-data/</span>
+</code><button type="button">Copy</button></pre>
+
+<p>➡️ Añade una nueva terminal y ejecuta en tu local (no en el repo)</p>
+<pre><code class="Bash"><span class="hl-0">mongosh</span>
+</code><button type="button">Copy</button></pre>
+
+<a id="ejecución-del-servidor" class="tsd-anchor"></a><h3 class="tsd-anchor-link">Ejecución del Servidor<a href="#ejecución-del-servidor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><a id="compilación" class="tsd-anchor"></a><h4 class="tsd-anchor-link">Compilación<a href="#compilación" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><pre><code class="Bash"><span class="hl-0">tsc</span>
+</code><button type="button">Copy</button></pre>
+
+<a id="ejecución" class="tsd-anchor"></a><h4 class="tsd-anchor-link">Ejecución<a href="#ejecución" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><pre><code class="Bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">dev</span>
+</code><button type="button">Copy</button></pre>
+
+<p>➡️ Después de ejecutar, podrás usarlo con las extensiones MongoDB y Postman en VisualStudio.</p>
+<a id="intergración-contínua" class="tsd-anchor"></a><h2 class="tsd-anchor-link">INTERGRACIÓN CONTÍNUA<a href="#intergración-contínua" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p><a href="https://sonarcloud.io/summary/new_code?id=ULL-ESIT-INF-DSI-2425_prct11-witcher-api-groupf"><img src="https://sonarcloud.io/api/project_badges/measure?project=ULL-ESIT-INF-DSI-2425_prct11-witcher-api-groupf&amp;metric=alert_status" alt="Quality Gate Status"></a></p>
+<p><a href="https://github.com/ULL-ESIT-INF-DSI-2425/prct11-witcher-api-groupf/actions/workflows/ci.yml"><img src="https://github.com/ULL-ESIT-INF-DSI-2425/prct11-witcher-api-groupf/actions/workflows/ci.yml/badge.svg" alt="CI Tests"></a></p>
+<a id="📱-contactos" class="tsd-anchor"></a><h2 class="tsd-anchor-link">📱 <em>Contactos</em><a href="#📱-contactos" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><table>
+<thead>
+<tr>
+<th>Icon</th>
+<th>Icon ID</th>
+<th>Enlaces</th>
+<th>Integrante</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="media/Gmail-Dark.svg" width="48"></td>
+<td><code>Gmail</code></td>
+<td><a href="mailto:alu0101544724@ull.edu.es">alu0101544724@ull.edu.es</a></td>
+<td>Saray</td>
+</tr>
+<tr>
+<td><img src="media/Gmail-Dark.svg" width="48"></td>
+<td><code>Gmail</code></td>
+<td><a href="mailto:alu0101540153@ull.edu.es">alu0101540153@ull.edu.es</a></td>
+<td>Victor</td>
+</tr>
+<tr>
+<td><img src="media/Gmail-Dark.svg" width="48"></td>
+<td><code>Gmail</code></td>
+<td><a href="mailto:alu0101495668@ull.edu.es">alu0101495668@ull.edu.es</a></td>
+<td>Adrian</td>
+</tr>
+<tr>
+<td><img src="media/Github-Dark.svg" width="48"></td>
+<td><code>github</code></td>
+<td><a href="https://github.com/alu0101544724">Perfil GitHub</a></td>
+<td>Saray</td>
+</tr>
+<tr>
+<td><img src="media/Github-Dark.svg" width="48"></td>
+<td><code>github</code></td>
+<td><a href="https://github.com/alu0101540153">Perfil GitHub</a></td>
+<td>Victor</td>
+</tr>
+<tr>
+<td><img src="media/Github-Dark.svg" width="48"></td>
+<td><code>github</code></td>
+<td><a href="">Perfil GitHub</a></td>
+<td>Adrian</td>
+</tr>
+</tbody>
+</table>
+<p><a href="https://classroom.github.com/a/iigoPlD8"><img src="https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg" alt="Review Assignment Due Date"></a>
+<a href="https://classroom.github.com/open-in-codespaces?assignment_repo_id=19313338"><img src="https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg" alt="Open in Codespaces"></a></p>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#dsi-práctica-12-api-rest-con-nodeexpress-para-gestionar-la-posada-del-lobo-blanco"><span>[DSI] <wbr/>Práctica 12: API REST con <wbr/>Node/<wbr/>Express para gestionar <wbr/>La <wbr/>Posada del <wbr/>Lobo <wbr/>Blanco</span></a><ul><li><a href="#página-web-documentación"><span>PÁGINA: WEB DOCUMENTACIÓN</span></a></li><li><a href="#compilacion"><span>Compilacion</span></a></li><li><ul><li><a href="#iniciación-de-mongodb"><span>Iniciación de <wbr/>MongoDB</span></a></li><li><a href="#ejecución-del-servidor"><span>Ejecución del <wbr/>Servidor</span></a></li><li><ul><li><a href="#compilación"><span>Compilación</span></a></li><li><a href="#ejecución"><span>Ejecución</span></a></li></ul></li></ul></li><li><a href="#intergración-contínua"><span>INTERGRACIÓ<wbr/>N CONTÍNUA</span></a></li><li><a href="#📱-contactos"><span>📱 <wbr/>Contactos</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html">notes-rest-api</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>

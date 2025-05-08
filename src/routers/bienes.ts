@@ -43,7 +43,6 @@ bienesRouter.get('/bienes', async (req, res) => {
 });
 
 
-
 /**
  * Ruta GET para obtener un bien por ID
  * @returns El bien encontrado o un mensaje de error

@@ -16,13 +16,13 @@ export interface ClienteDocumentInterface extends Document {
   nombre: string;
   tipo: 'Cazador' | 'Brujo' | 'Noble' | 'Bandido' | 'Mercenario' | 'Aldeano';
   dinero: number;
-  bienes: BienCantidad[];  // Cambiado de string[] a BienCantidad[]
+  bienes: BienCantidad[];  
   historia?: string;
 }
 
 // Validadores
 const validadorDinero = (value: number) => value >= 0;
-const validadorCantidad = (value: number) => value > 0;  // Validador para cantidad de bienes
+const validadorCantidad = (value: number) => value > 0;  
 
 
 /**
