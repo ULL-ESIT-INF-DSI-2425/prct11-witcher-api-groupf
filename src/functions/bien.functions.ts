@@ -55,3 +55,9 @@ export async function obtenerBienesPorTipo(tipo: string) {
 export async function obtenerBienesPorValor(valor: number) {
   return await Bien.find({ valor });
 }
+
+// optener el id de un bien por su nombre
+export async function obtenerIdBienPorNombre(nombre: string) {
+  const bien = await Bien.findOne({ nombre });
+  return bien ? bien._id : null;
+}
